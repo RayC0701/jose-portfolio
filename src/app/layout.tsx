@@ -21,12 +21,20 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: "Jose Canales — AI Engineer | Technical Founder",
   description:
-    "Portfolio of Jose Canales. AI Engineer, Technical Founder, and Infrastructure Architect building production-grade systems.",
+    "Building production-grade AI systems that ship, scale, and survive. 12+ production systems, +$193K signal PnL, 2,428 tests passing.",
   openGraph: {
     title: "Jose Canales — AI Engineer | Technical Founder",
     description:
-      "Where deep tech meets relentless execution. 12+ production systems, zero downtime.",
+      "Building production-grade AI systems that ship, scale, and survive.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jose Canales — AI Engineer | Technical Founder",
+    description:
+      "Building production-grade AI systems that ship, scale, and survive.",
+    images: ["/og-image.png"],
   },
 };
 

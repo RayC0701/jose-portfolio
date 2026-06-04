@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { useIntersection } from "./useIntersection";
@@ -37,6 +38,14 @@ function BentoCard({
         transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
       }}
     >
+      <Image
+        src={project.image}
+        alt={project.title}
+        fill
+        className="object-cover transition-opacity duration-500"
+        style={{ opacity: isHovered ? 0.35 : 0.2 }}
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
       <div
         className="absolute inset-0 transition-opacity duration-500"
         style={{

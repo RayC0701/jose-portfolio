@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRef, useEffect, useState, useCallback, type MouseEvent } from "react";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { useIntersection } from "./useIntersection";
@@ -91,20 +92,16 @@ function ProjectCard({
           }}
         >
           <div
-            className="h-44 flex items-center justify-center relative overflow-hidden"
-            style={{ background: project.gradient }}
+            className="h-44 relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-black/10" />
-            <div
-              className="absolute inset-0 opacity-20"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 30% 40%, rgba(255,255,255,0.2) 0%, transparent 60%)",
-              }}
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              className="object-cover"
+              sizes="360px"
             />
-            <span className="text-6xl font-black text-white/20 relative z-10 select-none">
-              {project.icon}
-            </span>
+            <div className="absolute inset-0 bg-black/20" />
             <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#111113] to-transparent" />
           </div>
 

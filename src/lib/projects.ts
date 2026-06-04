@@ -28,6 +28,7 @@ export type Project = {
   glowColor: string;
   accentColor: string;
   icon: string;
+  image: string;
   tags: string[];
   tech: string[];
   large: boolean;
@@ -50,6 +51,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(14, 116, 144, 0.6)",
     accentColor: "#22d3ee",
     icon: "S",
+    image: "/projects/sepsis-ai.png",
     tags: ["XGBoost", "FHIR R4", "FDA SaMD"],
     tech: ["Python", "XGBoost", "FHIR R4", "Docker"],
     large: true,
@@ -94,6 +96,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(161, 98, 7, 0.6)",
     accentColor: "#fbbf24",
     icon: "Q",
+    image: "/projects/quant-platform.png",
     tags: ["LightGBM", "Signal Bus", "2,428 Tests"],
     tech: ["Python", "LightGBM", "PostgreSQL", "Redis"],
     large: true,
@@ -138,6 +141,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(124, 58, 237, 0.6)",
     accentColor: "#a78bfa",
     icon: "F",
+    image: "/projects/friday-ai.png",
     tags: ["Claude API", "Hebbian", "RAG"],
     tech: ["TypeScript", "Claude API", "Supabase"],
     large: false,
@@ -182,6 +186,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(220, 38, 38, 0.5)",
     accentColor: "#fb923c",
     icon: "U",
+    image: "/projects/ultron-overwatch.png",
     tags: ["62 Checks", "Auto-Fix", "Docker"],
     tech: ["Go", "Docker", "Prometheus", "Grafana"],
     large: false,
@@ -201,6 +206,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(8, 145, 178, 0.6)",
     accentColor: "#2dd4bf",
     icon: "A",
+    image: "/projects/ai-agent-teams.png",
     tags: ["11 Agents", "Supabase", "Event Bus"],
     tech: ["TypeScript", "Supabase", "OpenAI", "Claude"],
     large: false,
@@ -220,6 +226,7 @@ export const PROJECTS: Project[] = [
     glowColor: "rgba(217, 119, 6, 0.5)",
     accentColor: "#fcd34d",
     icon: "T",
+    image: "/projects/texas-rank-rent.png",
     tags: ["Next.js", "Turborepo", "270 Sites"],
     tech: ["Next.js", "Turborepo", "Vercel", "Markdown"],
     large: false,
