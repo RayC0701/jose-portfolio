@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
-import { useIntersection } from "./useIntersection";
+import { useIntersection, useIsIntersecting } from "./useIntersection";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 /* ─── Real system data captured from production GPU host ─── */
@@ -152,11 +152,11 @@ export default function LiveTerminal() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const termRef = useRef<HTMLDivElement>(null);
   const isInView = useIntersection(sectionRef);
+  const isOnscreen = useIsIntersecting(sectionRef, "-50px");
   const reducedMotion = usePrefersReducedMotion();
   const [lines, setLines] = useState<React.ReactNode[]>([]);
   const [currentTyping, setCurrentTyping] = useState("");
   const [showCursor, setShowCursor] = useState(true);
-  const runningRef = useRef(false);
   const cancelRef = useRef(false);
 
   const staticLines = useMemo(() => {
@@ -200,11 +200,10 @@ export default function LiveTerminal() {
     }
   }, [lines, currentTyping]);
 
-  /* Run the animation */
+  /* Run the animation — restarts whenever section comes back into view */
   useEffect(() => {
-    if (!isInView || runningRef.current || reducedMotion) return;
+    if (!isOnscreen || reducedMotion) return;
 
-    runningRef.current = true;
     cancelRef.current = false;
 
     async function run() {
@@ -267,15 +266,15 @@ export default function LiveTerminal() {
 
     return () => {
       cancelRef.current = true;
-      runningRef.current = false;
     };
-  }, [isInView, reducedMotion, sleep]);
+  }, [isOnscreen, reducedMotion, sleep]);
 
-  /* Cursor blink */
+  /* Cursor blink — only while section is onscreen */
   useEffect(() => {
+    if (!isOnscreen) return;
     const id = setInterval(() => setShowCursor((c) => !c), 530);
     return () => clearInterval(id);
-  }, []);
+  }, [isOnscreen]);
 
   const prompt = (
     <>
