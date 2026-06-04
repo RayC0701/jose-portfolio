@@ -1,7 +1,4 @@
-"use client";
-
-import { useRef } from "react";
-import { useIntersection } from "./useIntersection";
+import { RevealWrapper } from "./RevealWrapper";
 
 const INFRA_ITEMS = [
   {
@@ -67,11 +64,8 @@ const INFRA_ITEMS = [
 ];
 
 export default function EngineeringSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useIntersection(ref);
-
   return (
-    <section id="engineering" ref={ref} className="relative py-32 md:py-40 overflow-hidden">
+    <section id="engineering" className="relative py-32 md:py-40 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B] via-[#050710] to-[#0A0A0B]" />
 
       <div className="absolute inset-0 overflow-hidden">
@@ -84,47 +78,31 @@ export default function EngineeringSection() {
       <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-purple-500/[0.02] rounded-full blur-[100px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div
-          className={`text-center mb-6 transition-all duration-800 ease-out ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-        >
+        <RevealWrapper className="text-center mb-6">
           <h2 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight">
             Engineering
           </h2>
-        </div>
+        </RevealWrapper>
 
-        <div
-          className={`text-center mb-6 transition-all duration-800 ease-out ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-          style={{ transitionDelay: "150ms" }}
-        >
+        <RevealWrapper className="text-center mb-6" delay={150}>
           <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/30 max-w-3xl mx-auto">
             Built for those who demand production-grade
           </p>
-        </div>
+        </RevealWrapper>
 
-        <div
-          className={`mx-auto mb-20 h-px transition-all duration-1000 ease-out origin-center ${
-            isInView ? "w-24 opacity-100" : "w-0 opacity-0"
-          }`}
-          style={{
-            transitionDelay: "300ms",
-            background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent)",
-          }}
-        />
+        <RevealWrapper className="flex justify-center mb-20" delay={300}>
+          <div
+            className="h-px w-24"
+            style={{
+              background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent)",
+            }}
+          />
+        </RevealWrapper>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {INFRA_ITEMS.map((item, i) => (
-            <div
-              key={item.title}
-              className={`group transition-all duration-700 ease-out ${
-                isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: `${300 + i * 100}ms` }}
-            >
-              <div className="relative h-full p-8 rounded-2xl glass-engineering transition-all duration-500 hover:-translate-y-2">
+            <RevealWrapper key={item.title} delay={300 + i * 100}>
+              <div className="group relative h-full p-8 rounded-2xl glass-engineering transition-all duration-500 hover:-translate-y-2">
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${item.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
 
                 <div className="absolute -bottom-px left-1/2 -translate-x-1/2 w-0 h-px group-hover:w-3/4 transition-all duration-700 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
@@ -142,16 +120,11 @@ export default function EngineeringSection() {
                   <p className="text-sm text-white/35 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{item.description}</p>
                 </div>
               </div>
-            </div>
+            </RevealWrapper>
           ))}
         </div>
 
-        <div
-          className={`mt-20 text-center transition-all duration-800 ease-out ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-          style={{ transitionDelay: "1000ms" }}
-        >
+        <RevealWrapper className="mt-20 text-center" delay={1000}>
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass">
             <div className="relative">
               <div className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -161,7 +134,7 @@ export default function EngineeringSection() {
               All Systems Operational
             </span>
           </div>
-        </div>
+        </RevealWrapper>
       </div>
 
       <div
