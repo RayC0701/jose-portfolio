@@ -5,6 +5,8 @@ import ProjectGrid from "@/components/ProjectGrid";
 import DramaticSection from "@/components/DramaticSection";
 import MetricsSection from "@/components/MetricsSection";
 import EngineeringSection from "@/components/EngineeringSection";
+import LiveTerminal from "@/components/LiveTerminal";
+import AriaDemo from "@/components/AriaDemo";
 import ContactSection from "@/components/ContactSection";
 
 export default function Home() {
@@ -17,6 +19,8 @@ export default function Home() {
       <DramaticSection />
       <MetricsSection />
       <EngineeringSection />
+      <LiveTerminal />
+      <AriaDemo />
       <ContactSection />
     </main>
   );
