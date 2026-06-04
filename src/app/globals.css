@@ -10,6 +10,7 @@
   --color-surface-light: #1A1A1D;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-oswald);
 }
 
 html {
@@ -77,6 +78,34 @@ body {
   animation: gradient-shift 6s ease infinite;
 }
 
+.text-gradient-impact {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6, #60a5fa);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift-impact 4s ease infinite;
+}
+
+@keyframes gradient-shift-impact {
+  0% { background-position: 0% 50%; }
+  33% { background-position: 50% 100%; }
+  66% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.grain-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 256px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
 .text-gradient-warm {
   background: linear-gradient(135deg, #F59E0B, #EF4444, #F59E0B);
   background-size: 200% 200%;
@@ -110,10 +139,167 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes accent-line-expand {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes metric-glow {
+  0% { text-shadow: 0 0 0px transparent; }
+  50% { text-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 0 60px rgba(59, 130, 246, 0.15); }
+  100% { text-shadow: 0 0 10px rgba(59, 130, 246, 0.1); }
+}
+
+@keyframes border-gradient-rotate {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+
+@keyframes card-glow-pulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.glass-engineering {
+  background: rgba(17, 17, 19, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+.glass-engineering:hover {
+  border-color: rgba(59, 130, 246, 0.15);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.05) inset,
+    0 20px 60px -10px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(59, 130, 246, 0.04);
+}
+
+.cta-gradient-border {
+  position: relative;
+  z-index: 0;
+}
+
+.cta-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from var(--gradient-angle, 0deg),
+    #3B82F6, #8B5CF6, #F59E0B, #EF4444, #3B82F6
+  );
+  z-index: -1;
+  animation: border-gradient-rotate 4s linear infinite;
+}
+
+.cta-gradient-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #0A0A0B;
+  z-index: -1;
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Cinematic hero word reveal */
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(30px);
+  will-change: filter, opacity, transform;
+}
+
+.hero-word-visible {
+  animation: word-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes word-reveal {
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
+/* Light sweep across headline */
+.light-sweep-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(255, 255, 255, 0.13) 50%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 60%
+  );
+  transform: translateX(-150%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.light-sweep-active {
+  animation: sweep 1.8s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(150%);
+  }
+}
+
+/* Elegant scroll indicator */
+.scroll-indicator {
+  width: 22px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 11px;
+  position: relative;
+}
+
+.scroll-dot {
+  width: 3px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scroll-down 2s ease-in-out infinite;
+}
+
+@keyframes scroll-down {
+  0% {
+    opacity: 1;
+    top: 6px;
+  }
+  50% {
+    opacity: 0.15;
+    top: 20px;
+  }
+  100% {
+    opacity: 0;
+    top: 20px;
+  }
 }
