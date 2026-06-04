@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { useIntersection } from "./useIntersection";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
@@ -159,6 +159,25 @@ export default function LiveTerminal() {
   const runningRef = useRef(false);
   const cancelRef = useRef(false);
 
+  const staticLines = useMemo(() => {
+    const result: React.ReactNode[] = [];
+    STEPS.forEach((step) => {
+      result.push(
+        <span key={`cmd-${result.length}`}>
+          <span style={{ color: "#22C55E" }}>jose@andraia</span>
+          <span style={{ color: "#6B7280" }}>:</span>
+          <span style={{ color: "#3B82F6" }}>~</span>
+          <span style={{ color: "#6B7280" }}>$ </span>
+          {step.command}
+        </span>
+      );
+      step.output.forEach((line) => {
+        result.push(<span key={`out-${result.length}`}>{parseAnsi(line)}</span>);
+      });
+    });
+    return result;
+  }, []);
+
   const sleep = useCallback(
     (ms: number) =>
       new Promise<void>((resolve) => {
@@ -183,29 +202,7 @@ export default function LiveTerminal() {
 
   /* Run the animation */
   useEffect(() => {
-    if (!isInView || runningRef.current) return;
-
-    if (reducedMotion) {
-      /* Show all output immediately for reduced-motion users */
-      const allLines: React.ReactNode[] = [];
-      STEPS.forEach((step) => {
-        allLines.push(
-          <span key={`cmd-${allLines.length}`}>
-            <span style={{ color: "#22C55E" }}>jose@andraia</span>
-            <span style={{ color: "#6B7280" }}>:</span>
-            <span style={{ color: "#3B82F6" }}>~</span>
-            <span style={{ color: "#6B7280" }}>$ </span>
-            {step.command}
-          </span>
-        );
-        step.output.forEach((line) => {
-          allLines.push(<span key={`out-${allLines.length}`}>{parseAnsi(line)}</span>);
-        });
-      });
-      setLines(allLines);
-      setCurrentTyping("");
-      return;
-    }
+    if (!isInView || runningRef.current || reducedMotion) return;
 
     runningRef.current = true;
     cancelRef.current = false;
@@ -375,7 +372,7 @@ export default function LiveTerminal() {
                 scrollbarColor: "rgba(255,255,255,0.1) transparent",
               }}
             >
-              {lines.map((line, i) => (
+              {(reducedMotion ? staticLines : lines).map((line, i) => (
                 <div key={i} className="min-h-[1.6em]">
                   {line}
                 </div>

@@ -19,6 +19,7 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jose-portfolio-joses-projects-933b60ea.vercel.app"),
   title: "Jose Canales — AI Engineer | Technical Founder",
   description:
     "Building production-grade AI systems that ship, scale, and survive. 12+ production systems, +$193K signal PnL, 2,428 tests passing.",
