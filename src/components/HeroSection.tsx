@@ -212,7 +212,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       <div className="absolute inset-0 hero-gradient" />
       <WebGLBackground />
       <div className="absolute inset-0 grain-overlay" />
@@ -222,7 +222,7 @@ export default function HeroSection() {
         className="relative z-10 max-w-6xl mx-auto px-6 text-center will-change-transform"
       >
         <p
-          className={`text-xs md:text-sm tracking-[0.4em] uppercase text-white/40 mb-8 transition-all duration-1000 ease-out ${
+          className={`text-xs md:text-sm tracking-[0.4em] uppercase text-white/40 mb-5 transition-all duration-1000 ease-out ${
             revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
           style={{ transitionDelay: "300ms" }}
@@ -278,7 +278,7 @@ export default function HeroSection() {
         </p>
 
         <div
-          className={`mt-16 flex flex-col items-center gap-3 transition-all duration-1000 ${
+          className={`mt-10 flex flex-col items-center gap-3 transition-all duration-1000 ${
             revealed ? "opacity-100" : "opacity-0"
           }`}
           style={{ transitionDelay: "1800ms" }}
