@@ -25,15 +25,17 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 backdrop-blur-md ${
           scrolled
-            ? "bg-[#0A0A0B]/80 backdrop-blur-xl border-b border-white/5"
-            : "bg-transparent"
+            ? "bg-[#0A0A0B]/60 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
+            : "bg-[#0A0A0B]/10 border-b border-white/[0.02]"
         } ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
-        style={{ transitionDelay: mounted ? "0ms" : "0ms" }}
       >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#" className="text-sm font-bold tracking-[0.3em] uppercase text-white/90">
+          <a
+            href="#"
+            className="text-sm font-bold tracking-[0.3em] uppercase text-white/90"
+          >
             @canales.md
           </a>
 
@@ -49,7 +51,7 @@ export default function Navbar() {
             ))}
             <a
               href="#contact"
-              className="text-xs tracking-[0.2em] uppercase px-5 py-2 border border-white/20 rounded-full text-white/80 hover:bg-white/5 hover:border-white/40 transition-all duration-300"
+              className="text-xs tracking-[0.2em] uppercase px-5 py-2 border border-white/20 rounded-full text-white/80 hover:bg-white/[0.06] hover:border-white/30 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)] transition-all duration-500"
             >
               Let&apos;s Talk
             </a>

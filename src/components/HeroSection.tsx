@@ -2,145 +2,292 @@
 
 import { useRef, useEffect, useState } from "react";
 
-function ParticleCanvas() {
+const VERT = `attribute vec2 position;
+void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+const FRAG = `precision highp float;
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec2 uMouse;
+
+vec2 hash(vec2 p){
+  p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));
+  return -1.0+2.0*fract(sin(p)*43758.5453);
+}
+
+float noise(vec2 p){
+  vec2 i=floor(p);vec2 f=fract(p);
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(
+    mix(dot(hash(i),f),dot(hash(i+vec2(1,0)),f-vec2(1,0)),u.x),
+    mix(dot(hash(i+vec2(0,1)),f-vec2(0,1)),dot(hash(i+vec2(1,1)),f-vec2(1,1)),u.x),
+    u.y);
+}
+
+float fbm(vec2 p){
+  float v=0.0,a=0.5;
+  mat2 r=mat2(0.877,0.479,-0.479,0.877);
+  for(int i=0;i<4;i++){v+=a*noise(p);p=r*p*2.0;a*=0.5;}
+  return v;
+}
+
+void main(){
+  vec2 uv=gl_FragCoord.xy/uResolution;
+  float asp=uResolution.x/uResolution.y;
+  vec2 p=(uv-0.5)*vec2(asp,1.0);
+  float t=uTime*0.08;
+
+  vec2 w=vec2(noise(p*2.5+t),noise(p*2.5+t+100.0))*0.12;
+  vec2 gp=(p+w)*10.0;
+  vec2 gf=fract(gp);
+  float lw=0.05;
+  float gx=smoothstep(0.0,lw,gf.x)*smoothstep(1.0,1.0-lw,gf.x);
+  float gy=smoothstep(0.0,lw,gf.y)*smoothstep(1.0,1.0-lw,gf.y);
+  float grid=(1.0-gx*gy)*0.07;
+
+  float nx=1.0-smoothstep(0.0,0.08,min(gf.x,1.0-gf.x));
+  float ny=1.0-smoothstep(0.0,0.08,min(gf.y,1.0-gf.y));
+  float nodes=nx*ny*0.12;
+
+  float n1=fbm(vec2(p.x*1.5+t*0.6,p.y*0.8-t*0.4));
+  float n2=fbm(vec2(p.x*1.2-t*0.5,p.y+t*0.3)+n1*0.4);
+  float aurora=smoothstep(0.1,0.6,n2)*0.15;
+
+  float pulse=1.0+0.15*sin(uTime*0.4);
+  float center=exp(-dot(p,p)*1.8)*0.1*pulse;
+
+  vec2 mp=(uMouse-0.5)*vec2(asp,1.0);
+  float mglow=exp(-pow(length(p-mp),2.0)*4.0)*0.06;
+
+  vec3 col=vec3(0.15,0.3,0.85)*(grid+nodes)
+    +mix(vec3(0.06,0.12,0.45),vec3(0.25,0.05,0.45),n1*0.5+0.5)*aurora
+    +vec3(0.12,0.2,0.6)*center
+    +mix(vec3(0.15,0.35,0.9),vec3(0.4,0.15,0.7),0.5+0.5*sin(uTime*0.25))*mglow;
+
+  float vig=1.0-dot(uv-0.5,uv-0.5)*1.2;
+  col*=clamp(vig,0.0,1.0);
+  col*=1.0+0.04*sin(uTime*0.3);
+
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+function WebGLBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const gl = canvas.getContext("webgl", {
+      alpha: false,
+      antialias: false,
+      powerPreference: "high-performance",
+    });
+    if (!gl) return;
 
-    let animationId: number;
-    const particles: { x: number; y: number; vx: number; vy: number; r: number; o: number }[] = [];
+    const compile = (type: number, src: string) => {
+      const s = gl.createShader(type)!;
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) return null;
+      return s;
+    };
+
+    const vs = compile(gl.VERTEX_SHADER, VERT);
+    const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    if (!vs || !fs) return;
+
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+    const pos = gl.getAttribLocation(prog, "position");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(prog, "uTime");
+    const uRes = gl.getUniformLocation(prog, "uResolution");
+    const uMouse = gl.getUniformLocation(prog, "uMouse");
+
+    let mx = 0.5,
+      my = 0.5,
+      smx = 0.5,
+      smy = 0.5;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio, 1.5);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
     };
     resize();
     window.addEventListener("resize", resize);
 
-    const count = Math.min(80, Math.floor(window.innerWidth / 20));
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5,
-        o: Math.random() * 0.3 + 0.1,
-      });
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${p.o})`;
-        ctx.fill();
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${0.06 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-      animationId = requestAnimationFrame(draw);
+    const onMouse = (e: MouseEvent) => {
+      mx = e.clientX / window.innerWidth;
+      my = 1.0 - e.clientY / window.innerHeight;
     };
-    draw();
+    window.addEventListener("mousemove", onMouse);
+
+    const t0 = performance.now();
+    let raf: number;
+    const render = () => {
+      smx += (mx - smx) * 0.02;
+      smy += (my - smy) * 0.02;
+      gl.uniform1f(uTime, (performance.now() - t0) / 1000);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform2f(uMouse, smx, smy);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      raf = requestAnimationFrame(render);
+    };
+    render();
 
     return () => {
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouse);
     };
   }, []);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
 }
 
+const LINES: { text: string; cls: string }[][] = [
+  [{ text: "WHERE", cls: "text-white/90" }],
+  [
+    { text: "DEEP", cls: "text-gradient" },
+    { text: "TECH", cls: "text-gradient" },
+  ],
+  [{ text: "MEETS", cls: "text-white/90" }],
+  [{ text: "RELENTLESS", cls: "text-gradient-warm" }],
+  [{ text: "EXECUTION", cls: "text-white/90" }],
+];
+
+let _gi = 0;
+const INDEXED = LINES.map((line) => line.map((w) => ({ ...w, i: _gi++ })));
+
 export default function HeroSection() {
-  const [mounted, setMounted] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setRevealed(true), 200);
+
+    let mx = 0,
+      my = 0,
+      sx = 0,
+      sy = 0,
+      raf: number;
+
+    const onMouse = (e: MouseEvent) => {
+      mx = (e.clientX / window.innerWidth - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("mousemove", onMouse);
+
+    const tick = () => {
+      sx += (mx - sx) * 0.04;
+      sy += (my - sy) * 0.04;
+      if (textRef.current) {
+        textRef.current.style.transform = `translate(${sx * -15}px, ${sy * -10}px)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMouse);
+    };
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       <div className="absolute inset-0 hero-gradient" />
-      <ParticleCanvas />
+      <WebGLBackground />
       <div className="absolute inset-0 grain-overlay" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+      <div
+        ref={textRef}
+        className="relative z-10 max-w-6xl mx-auto px-6 text-center will-change-transform"
+      >
         <p
           className={`text-xs md:text-sm tracking-[0.4em] uppercase text-white/40 mb-8 transition-all duration-1000 ease-out ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
           style={{ transitionDelay: "300ms" }}
         >
-          AI Engineer &middot; Technical Founder &middot; Infrastructure Architect
+          AI Engineer &middot; Technical Founder &middot; Infrastructure
+          Architect
         </p>
 
-        <h1
-          className={`text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold leading-[0.9] tracking-tight mb-6 transition-all duration-1000 ease-out ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-          style={{ transitionDelay: "500ms" }}
-        >
-          <span className="block text-white/90">WHERE</span>
-          <span className="block text-gradient">DEEP TECH</span>
-          <span className="block text-white/90">MEETS</span>
-          <span className="block text-gradient-warm">RELENTLESS</span>
-          <span className="block text-white/90">EXECUTION</span>
+        <h1 className="relative overflow-hidden font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.85] tracking-tight mb-4">
+          {INDEXED.map((line, li) => (
+            <span key={li} className="block">
+              {line.map((word, wi) => (
+                <span key={wi}>
+                  <span
+                    className={`inline-block hero-word ${word.cls} ${
+                      revealed ? "hero-word-visible" : ""
+                    }`}
+                    style={{ animationDelay: `${500 + word.i * 130}ms` }}
+                  >
+                    {word.text}
+                  </span>
+                  {wi < line.length - 1 && (
+                    <span className="inline-block w-[0.3em]" />
+                  )}
+                </span>
+              ))}
+            </span>
+          ))}
+          <span
+            className={`light-sweep-bar ${
+              revealed ? "light-sweep-active" : ""
+            }`}
+          />
         </h1>
 
         <p
           className={`text-lg md:text-xl text-white/40 max-w-2xl mx-auto mb-4 font-light transition-all duration-1000 ease-out ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+            revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
-          style={{ transitionDelay: "800ms" }}
+          style={{ transitionDelay: "1200ms" }}
         >
-          Jose Canales builds production-grade AI systems that ship, scale, and survive.
+          Jose Canales builds production-grade AI systems that ship, scale, and
+          survive.
         </p>
 
         <p
           className={`text-sm md:text-base tracking-[0.3em] uppercase font-bold text-white/60 transition-all duration-1000 ease-out ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+            revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
-          style={{ transitionDelay: "1000ms" }}
+          style={{ transitionDelay: "1400ms" }}
         >
           12 Production Systems. Zero Downtime.
         </p>
 
         <div
-          className={`mt-16 flex flex-col items-center gap-2 transition-all duration-1000 ${
-            mounted ? "opacity-100" : "opacity-0"
+          className={`mt-16 flex flex-col items-center gap-3 transition-all duration-1000 ${
+            revealed ? "opacity-100" : "opacity-0"
           }`}
-          style={{ transitionDelay: "1400ms" }}
+          style={{ transitionDelay: "1800ms" }}
         >
-          <span className="text-[10px] tracking-[0.3em] uppercase text-white/30">
+          <span className="text-[10px] tracking-[0.3em] uppercase text-white/25">
             Scroll to explore
           </span>
-          <div className="w-5 h-8 border border-white/20 rounded-full flex items-start justify-center p-1 animate-bounce">
-            <div className="w-1 h-2 bg-white/40 rounded-full" />
+          <div className="scroll-indicator">
+            <div className="scroll-dot" />
           </div>
         </div>
       </div>

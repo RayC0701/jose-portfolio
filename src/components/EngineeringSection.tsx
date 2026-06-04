@@ -11,7 +11,8 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "Docker Orchestration",
-    description: "17+ containers managed across multi-service stacks with automated health monitoring.",
+    description: "17+ containers managed across multi-service stacks with automated health monitoring and zero-downtime deployments.",
+    accent: "from-blue-400/20 to-cyan-400/20",
   },
   {
     icon: (
@@ -21,6 +22,7 @@ const INFRA_ITEMS = [
     ),
     title: "GPU Compute Clusters",
     description: "Dedicated inference servers running XGBoost and LightGBM model pipelines at production scale.",
+    accent: "from-purple-400/20 to-pink-400/20",
   },
   {
     icon: (
@@ -30,6 +32,7 @@ const INFRA_ITEMS = [
     ),
     title: "Real-Time Monitoring",
     description: "62 automated health checks with Prometheus metrics, Grafana dashboards, and auto-fix playbooks.",
+    accent: "from-emerald-400/20 to-green-400/20",
   },
   {
     icon: (
@@ -39,6 +42,7 @@ const INFRA_ITEMS = [
     ),
     title: "Security Hardening",
     description: "33+ security fixes across healthcare AI, with HIPAA-compliant deployment pipelines.",
+    accent: "from-amber-400/20 to-orange-400/20",
   },
   {
     icon: (
@@ -48,6 +52,7 @@ const INFRA_ITEMS = [
     ),
     title: "CI/CD Pipelines",
     description: "Automated test suites with 2,428 passing tests across multi-repo monorepo architectures.",
+    accent: "from-sky-400/20 to-blue-400/20",
   },
   {
     icon: (
@@ -57,6 +62,7 @@ const INFRA_ITEMS = [
     ),
     title: "AI Agent Architecture",
     description: "Event-driven Signal Bus connecting 11 autonomous agents with Supabase-backed state management.",
+    accent: "from-violet-400/20 to-fuchsia-400/20",
   },
 ];
 
@@ -65,8 +71,8 @@ export default function EngineeringSection() {
   const isInView = useIntersection(ref);
 
   return (
-    <section id="engineering" ref={ref} className="relative py-32 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B] via-[#060810] to-[#0A0A0B]" />
+    <section id="engineering" ref={ref} className="relative py-32 md:py-40 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B] via-[#050710] to-[#0A0A0B]" />
 
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-blue-500/10 to-transparent" />
@@ -74,39 +80,66 @@ export default function EngineeringSection() {
         <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" />
       </div>
 
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-500/[0.03] rounded-full blur-[200px]" />
+      <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-purple-500/[0.02] rounded-full blur-[100px]" />
+
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div
-          className={`text-center mb-8 transition-all duration-800 ease-out ${
+          className={`text-center mb-6 transition-all duration-800 ease-out ${
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-blue-400/50 mb-4">Engineering</p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Under The <span className="text-gradient">Hood</span>
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+            Engineering
           </h2>
-          <p className="text-sm md:text-base tracking-[0.2em] uppercase text-white/30 max-w-3xl mx-auto">
-            Built for those who demand production-grade systems
+        </div>
+
+        <div
+          className={`text-center mb-6 transition-all duration-800 ease-out ${
+            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+          }`}
+          style={{ transitionDelay: "150ms" }}
+        >
+          <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/30 max-w-3xl mx-auto">
+            Built for those who demand production-grade
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={`mx-auto mb-20 h-px transition-all duration-1000 ease-out origin-center ${
+            isInView ? "w-24 opacity-100" : "w-0 opacity-0"
+          }`}
+          style={{
+            transitionDelay: "300ms",
+            background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent)",
+          }}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {INFRA_ITEMS.map((item, i) => (
             <div
               key={item.title}
               className={`group transition-all duration-700 ease-out ${
-                isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
-              style={{ transitionDelay: `${200 + i * 100}ms` }}
+              style={{ transitionDelay: `${300 + i * 100}ms` }}
             >
-              <div className="relative h-full p-8 rounded-2xl glass hover:border-white/15 transition-all duration-500">
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative h-full p-8 rounded-2xl glass-engineering transition-all duration-500 hover:-translate-y-2">
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${item.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+
+                <div className="absolute -bottom-px left-1/2 -translate-x-1/2 w-0 h-px group-hover:w-3/4 transition-all duration-700 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
+
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-8 bg-blue-500/0 group-hover:bg-blue-500/[0.06] rounded-full blur-xl transition-all duration-700" />
 
                 <div className="relative z-10">
-                  <div className="text-blue-400/60 mb-6 group-hover:text-blue-400 transition-colors duration-300">
-                    {item.icon}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="text-white/30 group-hover:text-blue-400 transition-colors duration-500">
+                      {item.icon}
+                    </div>
+                    <div className="h-px flex-1 bg-gradient-to-r from-white/5 to-transparent" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-white/40 leading-relaxed">{item.description}</p>
+                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-white transition-colors">{item.title}</h3>
+                  <p className="text-sm text-white/35 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{item.description}</p>
                 </div>
               </div>
             </div>
@@ -120,13 +153,29 @@ export default function EngineeringSection() {
           style={{ transitionDelay: "1000ms" }}
         >
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="relative">
+              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            </div>
             <span className="text-xs tracking-[0.2em] uppercase text-white/50">
               All Systems Operational
             </span>
           </div>
         </div>
       </div>
+
+      <div
+        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        style={{
+          background: "linear-gradient(to top, rgba(10,10,11,0.95), transparent)",
+        }}
+      />
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-20 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(59,130,246,0.04), transparent 70%)",
+        }}
+      />
     </section>
   );
 }
