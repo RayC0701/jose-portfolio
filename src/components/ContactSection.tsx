@@ -143,21 +143,22 @@ export default function ContactSection() {
             </svg>
           </a>
 
-          <div className="mt-16 flex items-center justify-center gap-6">
-            {SOCIAL_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/social flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/5 hover:border-white/15 text-white/30 hover:text-white/70 transition-all duration-300 hover:bg-white/[0.03]"
-              >
-                <span className="transition-colors duration-300">
-                  {link.icon}
-                </span>
-                <span className="text-xs tracking-[0.15em] uppercase">{link.label}</span>
-              </a>
-            ))}
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
+            {SOCIAL_LINKS.map((link) => {
+              const isMail = link.href.startsWith("mailto:");
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={isMail ? undefined : "_blank"}
+                  rel={isMail ? undefined : "noopener noreferrer"}
+                  className="group/social flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/5 hover:border-white/15 text-white/30 hover:text-white/70 transition-all duration-300 hover:bg-white/[0.03] min-h-[44px]"
+                >
+                  <span className="transition-colors duration-300">{link.icon}</span>
+                  <span className="text-xs tracking-[0.15em] uppercase">{link.label}</span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -165,7 +166,7 @@ export default function ContactSection() {
       <div className="relative z-10 mt-32 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/20 tracking-wider">
-            &copy; 2025 Jose Canales. All rights reserved.
+            &copy; {new Date().getFullYear()} Jose Canales. All rights reserved.
           </p>
           <p className="text-xs text-white/20 tracking-wider">
             Designed &amp; engineered by <span className="text-white/30">@canales.md</span>

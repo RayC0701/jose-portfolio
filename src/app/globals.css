@@ -34,16 +34,6 @@ body {
   50% { background-position: 100% 50%; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-}
-
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
   10% { transform: translate(-5%, -10%); }
@@ -119,10 +109,6 @@ body {
   background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.06) 40%, transparent 70%);
 }
 
-.card-shine {
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 60%);
-}
-
 .glass {
   background: rgba(17, 17, 19, 0.7);
   backdrop-filter: blur(20px);
@@ -130,34 +116,9 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.reflection {
-  -webkit-box-reflect: below 0px linear-gradient(to bottom, transparent 60%, rgba(10, 10, 11, 0.8));
-}
-
-@keyframes count-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes accent-line-expand {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-@keyframes metric-glow {
-  0% { text-shadow: 0 0 0px transparent; }
-  50% { text-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 0 60px rgba(59, 130, 246, 0.15); }
-  100% { text-shadow: 0 0 10px rgba(59, 130, 246, 0.1); }
-}
-
 @keyframes border-gradient-rotate {
   0% { --gradient-angle: 0deg; }
   100% { --gradient-angle: 360deg; }
-}
-
-@keyframes card-glow-pulse {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
 }
 
 .glass-engineering {
@@ -207,14 +168,6 @@ body {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 /* Cinematic hero word reveal */
@@ -301,5 +254,39 @@ body {
   100% {
     opacity: 0;
     top: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-word {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .light-sweep-bar,
+  .grain-overlay::before,
+  .scroll-dot {
+    animation: none !important;
+  }
+
+  .text-gradient,
+  .text-gradient-impact,
+  .text-gradient-warm {
+    animation: none !important;
+    background-position: 0% 50% !important;
   }
 }

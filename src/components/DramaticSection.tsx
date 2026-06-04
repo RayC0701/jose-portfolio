@@ -1,18 +1,27 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { useIntersection } from "./useIntersection";
+import { useRef, useEffect } from "react";
+import { useIntersection, useIsIntersecting } from "./useIntersection";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
-function PerspectiveGrid() {
+function PerspectiveGrid({
+  active,
+  reduceMotion,
+}: {
+  active: boolean;
+  reduceMotion: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const runningRef = useRef(false);
 
   useEffect(() => {
+    if (reduceMotion) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId: number;
+    let animationId = 0;
     let time = 0;
 
     const resize = () => {
@@ -23,6 +32,7 @@ function PerspectiveGrid() {
     window.addEventListener("resize", resize);
 
     const draw = () => {
+      if (!runningRef.current) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time += 0.003;
 
@@ -107,25 +117,27 @@ function PerspectiveGrid() {
 
       animationId = requestAnimationFrame(draw);
     };
-    draw();
+
+    if (active) {
+      runningRef.current = true;
+      animationId = requestAnimationFrame(draw);
+    }
 
     return () => {
+      runningRef.current = false;
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [active, reduceMotion]);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />;
 }
 
 export default function DramaticSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useIntersection(ref, "-200px");
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    if (isInView && !revealed) setRevealed(true);
-  }, [isInView, revealed]);
+  const revealed = useIntersection(ref, "-200px");
+  const active = useIsIntersecting(ref, "200px");
+  const reduceMotion = usePrefersReducedMotion();
 
   const lines = [
     { text: "PRODUCTION", gradient: false, delay: 200 },
@@ -137,7 +149,7 @@ export default function DramaticSection() {
   return (
     <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B] via-[#050710] to-[#0A0A0B]" />
-      <PerspectiveGrid />
+      <PerspectiveGrid active={active} reduceMotion={reduceMotion} />
       <div className="absolute inset-0 grain-overlay" />
 
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-500/[0.03] rounded-full blur-[150px]" />
@@ -163,9 +175,7 @@ export default function DramaticSection() {
                     : "text-gradient"
                   : "text-white/90"
               } ${
-                revealed
-                  ? "opacity-100 translate-y-0 blur-0"
-                  : "opacity-0 translate-y-6 blur-md"
+                revealed ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-6 blur-md"
               }`}
               style={{ transitionDelay: `${line.delay}ms` }}
             >
@@ -175,12 +185,13 @@ export default function DramaticSection() {
         </h2>
 
         <div
-          className={`mx-auto mb-10 h-px transition-all duration-1200 ease-out origin-center ${
+          className={`mx-auto mb-10 h-px transition-all duration-1000 ease-out origin-center ${
             revealed ? "w-40 opacity-100" : "w-0 opacity-0"
           }`}
           style={{
             transitionDelay: "1200ms",
-            background: "linear-gradient(90deg, transparent, rgba(59,130,246,0.5), rgba(139,92,246,0.5), transparent)",
+            background:
+              "linear-gradient(90deg, transparent, rgba(59,130,246,0.5), rgba(139,92,246,0.5), transparent)",
           }}
         />
 

@@ -166,9 +166,7 @@ export default function MetricsSection() {
                 </div>
 
                 <div
-                  className={`text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-3 tabular-nums transition-all duration-700 ${
-                    isComplete ? "metric-glow-active" : ""
-                  }`}
+                  className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-3 tabular-nums transition-all duration-700"
                   style={
                     isComplete
                       ? { textShadow: "0 0 20px rgba(59,130,246,0.2), 0 0 40px rgba(59,130,246,0.08)" }

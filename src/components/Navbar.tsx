@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 
 const NAV_ITEMS = [
   { label: "Work", href: "#work" },
@@ -10,17 +10,37 @@ const NAV_ITEMS = [
   { label: "Contact", href: "#contact" },
 ];
 
+function subscribeScroll(callback: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+}
+
+function getScrolled(): boolean {
+  return window.scrollY > 80;
+}
+
+function getScrolledServer(): boolean {
+  return false;
+}
+
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getScrolledServer);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [mobileOpen]);
 
   return (
     <>
@@ -29,7 +49,7 @@ export default function Navbar() {
           scrolled
             ? "bg-[#0A0A0B]/60 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
             : "bg-[#0A0A0B]/10 border-b border-white/[0.02]"
-        } ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+        }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
@@ -58,9 +78,12 @@ export default function Navbar() {
           </div>
 
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-1.5"
-            aria-label="Toggle menu"
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            className="md:hidden w-11 h-11 -mr-3 flex flex-col items-center justify-center gap-1.5"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             <span
               className={`w-5 h-px bg-white transition-all duration-300 ${
@@ -77,13 +100,19 @@ export default function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-[#0A0A0B]/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8">
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+          className="fixed inset-0 z-40 bg-[#0A0A0B]/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8"
+        >
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className="text-2xl tracking-[0.3em] uppercase text-white/70 hover:text-white transition-colors"
+              className="text-2xl tracking-[0.3em] uppercase text-white/70 hover:text-white transition-colors min-h-[44px] flex items-center"
             >
               {item.label}
             </a>

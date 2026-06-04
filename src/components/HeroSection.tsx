@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { useIsIntersecting } from "./useIntersection";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const VERT = `attribute vec2 position;
 void main(){gl_Position=vec4(position,0.0,1.0);}`;
@@ -71,8 +73,23 @@ void main(){
   gl_FragColor=vec4(col,1.0);
 }`;
 
-function WebGLBackground() {
+function StaticBackground() {
+  return (
+    <div
+      className="absolute inset-0"
+      aria-hidden="true"
+      style={{
+        background:
+          "radial-gradient(ellipse 70% 50% at 50% 40%, rgba(59,130,246,0.18) 0%, rgba(139,92,246,0.08) 45%, transparent 75%), #0A0A0B",
+      }}
+    />
+  );
+}
+
+function WebGLBackground({ active }: { active: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [unsupported, setUnsupported] = useState(false);
+  const runningRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -82,25 +99,36 @@ function WebGLBackground() {
       antialias: false,
       powerPreference: "high-performance",
     });
-    if (!gl) return;
+    if (!gl) {
+      setUnsupported(true);
+      return;
+    }
 
     const compile = (type: number, src: string) => {
       const s = gl.createShader(type)!;
       gl.shaderSource(s, src);
       gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) return null;
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        return null;
+      }
       return s;
     };
 
     const vs = compile(gl.VERTEX_SHADER, VERT);
     const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
+    if (!vs || !fs) {
+      setUnsupported(true);
+      return;
+    }
 
     const prog = gl.createProgram()!;
     gl.attachShader(prog, vs);
     gl.attachShader(prog, fs);
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      setUnsupported(true);
+      return;
+    }
     gl.useProgram(prog);
 
     const buf = gl.createBuffer();
@@ -139,8 +167,9 @@ function WebGLBackground() {
     window.addEventListener("mousemove", onMouse);
 
     const t0 = performance.now();
-    let raf: number;
+    let raf = 0;
     const render = () => {
+      if (!runningRef.current) return;
       smx += (mx - smx) * 0.02;
       smy += (my - smy) * 0.02;
       gl.uniform1f(uTime, (performance.now() - t0) / 1000);
@@ -149,16 +178,22 @@ function WebGLBackground() {
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       raf = requestAnimationFrame(render);
     };
-    render();
+
+    if (active) {
+      runningRef.current = true;
+      raf = requestAnimationFrame(render);
+    }
 
     return () => {
+      runningRef.current = false;
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouse);
     };
-  }, []);
+  }, [active]);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+  if (unsupported) return <StaticBackground />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />;
 }
 
 const LINES: { text: string; cls: string }[][] = [
@@ -177,16 +212,28 @@ const INDEXED = LINES.map((line) => line.map((w) => ({ ...w, i: _gi++ })));
 
 export default function HeroSection() {
   const [revealed, setRevealed] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = usePrefersReducedMotion();
+  const inView = useIsIntersecting(sectionRef, "0px");
+  const active = inView && !reduceMotion;
 
   useEffect(() => {
     const timer = setTimeout(() => setRevealed(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
+  useEffect(() => {
+    if (!active) {
+      if (textRef.current) textRef.current.style.transform = "";
+      return;
+    }
     let mx = 0,
       my = 0,
       sx = 0,
       sy = 0,
-      raf: number;
+      raf = 0,
+      running = true;
 
     const onMouse = (e: MouseEvent) => {
       mx = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -195,6 +242,7 @@ export default function HeroSection() {
     window.addEventListener("mousemove", onMouse);
 
     const tick = () => {
+      if (!running) return;
       sx += (mx - sx) * 0.04;
       sy += (my - sy) * 0.04;
       if (textRef.current) {
@@ -205,16 +253,19 @@ export default function HeroSection() {
     raf = requestAnimationFrame(tick);
 
     return () => {
-      clearTimeout(timer);
+      running = false;
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouse);
     };
-  }, []);
+  }, [active]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+    >
       <div className="absolute inset-0 hero-gradient" />
-      <WebGLBackground />
+      {reduceMotion ? <StaticBackground /> : <WebGLBackground active={active} />}
       <div className="absolute inset-0 grain-overlay" />
 
       <div
@@ -227,8 +278,7 @@ export default function HeroSection() {
           }`}
           style={{ transitionDelay: "300ms" }}
         >
-          AI Engineer &middot; Technical Founder &middot; Infrastructure
-          Architect
+          AI Engineer &middot; Technical Founder &middot; Infrastructure Architect
         </p>
 
         <h1 className="relative overflow-hidden font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.85] tracking-tight mb-4">
@@ -237,25 +287,17 @@ export default function HeroSection() {
               {line.map((word, wi) => (
                 <span key={wi}>
                   <span
-                    className={`inline-block hero-word ${word.cls} ${
-                      revealed ? "hero-word-visible" : ""
-                    }`}
+                    className={`inline-block hero-word ${word.cls} ${revealed ? "hero-word-visible" : ""}`}
                     style={{ animationDelay: `${500 + word.i * 130}ms` }}
                   >
                     {word.text}
                   </span>
-                  {wi < line.length - 1 && (
-                    <span className="inline-block w-[0.3em]" />
-                  )}
+                  {wi < line.length - 1 && <span className="inline-block w-[0.3em]" />}
                 </span>
               ))}
             </span>
           ))}
-          <span
-            className={`light-sweep-bar ${
-              revealed ? "light-sweep-active" : ""
-            }`}
-          />
+          <span className={`light-sweep-bar ${revealed ? "light-sweep-active" : ""}`} />
         </h1>
 
         <p
@@ -264,8 +306,7 @@ export default function HeroSection() {
           }`}
           style={{ transitionDelay: "1200ms" }}
         >
-          Jose Canales builds production-grade AI systems that ship, scale, and
-          survive.
+          Jose Canales builds production-grade AI systems that ship, scale, and survive.
         </p>
 
         <p
@@ -283,9 +324,7 @@ export default function HeroSection() {
           }`}
           style={{ transitionDelay: "1800ms" }}
         >
-          <span className="text-[10px] tracking-[0.3em] uppercase text-white/25">
-            Scroll to explore
-          </span>
+          <span className="text-[10px] tracking-[0.3em] uppercase text-white/25">Scroll to explore</span>
           <div className="scroll-indicator">
             <div className="scroll-dot" />
           </div>

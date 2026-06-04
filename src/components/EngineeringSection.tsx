@@ -89,7 +89,7 @@ export default function EngineeringSection() {
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
         >
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight">
             Engineering
           </h2>
         </div>
