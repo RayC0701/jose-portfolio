@@ -1,7 +1,4 @@
-"use client";
-
-import { useRef } from "react";
-import { useIntersection } from "./useIntersection";
+import { RevealWrapper } from "./RevealWrapper";
 
 const ENGAGEMENT_MODELS = [
   {
@@ -68,21 +65,14 @@ const SOCIAL_LINKS = [
 ];
 
 export default function ContactSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useIntersection(ref);
-
   return (
-    <section id="contact" ref={ref} className="relative py-32 md:py-40">
+    <section id="contact" className="relative py-32 md:py-40">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B] via-[#06060A] to-[#040406]" />
 
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-blue-500/[0.02] rounded-full blur-[150px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div
-          className={`text-center mb-20 transition-all duration-800 ease-out ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-        >
+        <RevealWrapper className="text-center mb-20">
           <p className="text-xs tracking-[0.4em] uppercase text-white/30 mb-4">Engagement</p>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Let&apos;s Build <span className="text-gradient">Together</span>
@@ -90,18 +80,12 @@ export default function ContactSection() {
           <p className="text-lg text-white/40 max-w-2xl mx-auto font-light">
             Whether you need a technical co-founder, a production AI system, or an architecture that scales.
           </p>
-        </div>
+        </RevealWrapper>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-20">
           {ENGAGEMENT_MODELS.map((model, i) => (
-            <div
-              key={model.title}
-              className={`group transition-all duration-700 ease-out ${
-                isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: `${i * 120}ms` }}
-            >
-              <div className="relative h-full p-8 rounded-2xl glass hover:border-white/15 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)]">
+            <RevealWrapper key={model.title} delay={i * 120}>
+              <div className="relative h-full p-8 rounded-2xl glass hover:border-white/15 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)] group">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10">
@@ -117,16 +101,11 @@ export default function ContactSection() {
                   <p className="text-sm text-white/40 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{model.description}</p>
                 </div>
               </div>
-            </div>
+            </RevealWrapper>
           ))}
         </div>
 
-        <div
-          className={`text-center transition-all duration-800 ease-out ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-          style={{ transitionDelay: "500ms" }}
-        >
+        <RevealWrapper className="text-center" delay={500}>
           <a
             href="mailto:jcanales07@gmail.com"
             className="group relative inline-flex items-center gap-3 px-12 py-5 rounded-full cta-gradient-border text-white font-bold text-sm tracking-[0.2em] uppercase transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.15)]"
@@ -160,7 +139,7 @@ export default function ContactSection() {
               );
             })}
           </div>
-        </div>
+        </RevealWrapper>
       </div>
 
       <div className="relative z-10 mt-32 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
