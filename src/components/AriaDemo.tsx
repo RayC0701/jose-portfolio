@@ -1,19 +1,8 @@
-"use client";
-
-import { useRef } from "react";
-import { useIntersection } from "./useIntersection";
+import { RevealWrapper } from "./RevealWrapper";
 
 export default function AriaDemo() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useIntersection(ref);
-
   return (
-    <div
-      ref={ref}
-      className={`relative max-w-5xl mx-auto px-6 pb-20 transition-all duration-800 ease-out ${
-        isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
+    <RevealWrapper className="relative max-w-5xl mx-auto px-6 pb-20" margin="-100px">
       <div className="relative rounded-2xl overflow-hidden border border-white/[0.06] bg-[#0D1117]/80 backdrop-blur-xl">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.04] to-blue-500/[0.04]" />
 
@@ -104,6 +93,6 @@ export default function AriaDemo() {
           </div>
         </div>
       </div>
-    </div>
+    </RevealWrapper>
   );
 }
