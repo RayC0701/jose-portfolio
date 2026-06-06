@@ -107,10 +107,18 @@ export default function ContactSection() {
 
         <RevealWrapper className="text-center" delay={500}>
           <a
-            href="mailto:jcanales07@gmail.com"
+            href="https://cal.com/josecanales/ai-consulting"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group relative inline-flex items-center gap-3 px-12 py-5 rounded-full cta-gradient-border text-white font-bold text-sm tracking-[0.2em] uppercase transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.15)]"
           >
-            <span>Let&apos;s Build Something</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span>Book a Discovery Call</span>
             <svg
               className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
               fill="none"

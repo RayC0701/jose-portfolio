@@ -70,7 +70,9 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#contact"
+              href="https://cal.com/josecanales/ai-consulting"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-xs tracking-[0.2em] uppercase px-5 py-2 border border-white/20 rounded-full text-white/80 hover:bg-white/[0.06] hover:border-white/30 hover:shadow-[0_0_25px_rgba(59,130,246,0.25)] transition-all duration-500"
             >
               Let&apos;s Talk
