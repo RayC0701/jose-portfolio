@@ -164,7 +164,7 @@ export default function DramaticSection() {
           The Philosophy
         </p>
 
-        <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold leading-[0.85] tracking-tight mb-10">
+        <h2 className="text-[clamp(2.5rem,10vw,3rem)] sm:text-7xl md:text-8xl lg:text-9xl font-bold leading-[0.85] tracking-tight mb-10 break-words">
           {lines.map((line, i) => (
             <span
               key={i}

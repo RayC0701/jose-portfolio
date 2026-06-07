@@ -29,7 +29,6 @@ function ProjectCard({
   const isCenter = Math.abs(offset) < 0.5;
   const absOffset = Math.abs(offset);
   const scale = isCenter ? 1.05 : Math.max(0.78, 1 - absOffset * 0.12);
-  const translateX = offset * 390;
   const translateZ = isCenter ? 40 : -absOffset * 60;
   const rotateY = offset * -6;
   const opacity = Math.max(0.25, 1 - absOffset * 0.3);
@@ -52,18 +51,18 @@ function ProjectCard({
 
   return (
     <div
-      className="absolute left-1/2 top-0"
+      className="absolute left-1/2 top-0 w-[min(360px,calc(100vw-3rem))]"
       style={{
-        transform: `translateX(calc(-50% + ${translateX}px)) perspective(1200px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+        "--card-spacing": "min(390px, calc(100vw - 2rem))",
+        transform: `translateX(calc(-50% + ${offset} * var(--card-spacing))) perspective(1200px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
         opacity: visible ? opacity : 0,
         transition: `transform ${transitionMs}ms cubic-bezier(0.23, 1, 0.32, 1), opacity ${transitionMs}ms ease`,
         transitionDelay: visible && !reduceMotion ? `${index * 80}ms` : "0ms",
         zIndex: isCenter ? 20 : 10 - Math.round(absOffset),
-        width: "360px",
         pointerEvents: absOffset > 3 ? "none" : "auto",
         filter: isCenter ? "none" : `blur(${Math.min(absOffset * 1.5, 3)}px)`,
         cursor: isCenter ? "default" : "pointer",
-      }}
+      } as React.CSSProperties}
       onClick={!isCenter ? onSelect : undefined}
     >
       <div
@@ -99,7 +98,7 @@ function ProjectCard({
               alt={project.title}
               fill
               className="object-cover"
-              sizes="360px"
+              sizes="(max-width: 400px) calc(100vw - 3rem), 360px"
             />
             <div className="absolute inset-0 bg-black/20" />
             <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#111113] to-transparent" />

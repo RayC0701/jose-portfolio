@@ -144,7 +144,7 @@ function Defs({ accent }: { accent: string }) {
 function Frame({ children, accent }: { children: React.ReactNode; accent: string }) {
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl border"
+      className="relative w-full overflow-x-auto rounded-2xl border"
       style={{
         background: "rgba(10,10,11,0.6)",
         borderColor: "rgba(255,255,255,0.08)",
@@ -156,7 +156,7 @@ function Frame({ children, accent }: { children: React.ReactNode; accent: string
           background: `radial-gradient(ellipse at center, ${accent}10, transparent 70%)`,
         }}
       />
-      <div className="relative">{children}</div>
+      <div className="relative min-w-[600px]">{children}</div>
     </div>
   );
 }
