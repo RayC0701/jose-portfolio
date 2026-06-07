@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 
 const NAV_ITEMS = [
   { label: "Work", href: "#work" },
@@ -27,20 +27,35 @@ function getScrolledServer(): boolean {
 export default function Navbar() {
   const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getScrolledServer);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
+
+  const closeMobile = useCallback(() => {
+    setMobileOpen(false);
+  }, []);
 
   useEffect(() => {
-    if (!mobileOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMobileOpen(false);
-    };
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (mobileOpen) {
+      dialog.showModal();
+    } else {
+      dialog.close();
+    }
   }, [mobileOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleClose = () => {
+      setMobileOpen(false);
+      toggleBtnRef.current?.focus();
+    };
+    dialog.addEventListener("close", handleClose);
+    return () => dialog.removeEventListener("close", handleClose);
+  }, []);
 
   return (
     <>
@@ -80,6 +95,7 @@ export default function Navbar() {
           </div>
 
           <button
+            ref={toggleBtnRef}
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
             className="md:hidden w-11 h-11 -mr-3 flex flex-col items-center justify-center gap-1.5"
@@ -101,26 +117,28 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {mobileOpen && (
-        <div
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Site navigation"
-          className="fixed inset-0 z-40 bg-[#0A0A0B]/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8"
-        >
+      <dialog
+        ref={dialogRef}
+        id="mobile-menu"
+        aria-label="Site navigation"
+        className="fixed inset-0 z-40 w-full h-full max-w-none max-h-none m-0 p-0 border-none bg-[#0A0A0B]/95 backdrop-blur-2xl backdrop:bg-transparent"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeMobile();
+        }}
+      >
+        <div className="flex flex-col items-center justify-center h-full gap-8">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              onClick={() => setMobileOpen(false)}
+              onClick={closeMobile}
               className="text-2xl tracking-[0.3em] uppercase text-white/70 hover:text-white transition-colors min-h-[44px] flex items-center"
             >
               {item.label}
             </a>
           ))}
         </div>
-      )}
+      </dialog>
     </>
   );
 }
