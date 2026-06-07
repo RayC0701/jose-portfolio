@@ -14,7 +14,7 @@ export type CaseStudy = {
   constraints: string[];
   outcomes: CaseStudyOutcome[];
   techStack: CaseStudyStack[];
-  diagramId: "sepsis" | "quant" | "friday";
+  diagramId: "sepsis" | "quant" | "friday" | "ultron" | "agents";
 };
 
 export type Project = {
@@ -191,6 +191,31 @@ export const PROJECTS: Project[] = [
     tech: ["Go", "Docker", "Prometheus", "Grafana"],
     large: false,
     animDir: "left",
+    caseStudy: {
+      problem:
+        "Production systems fail silently. Traditional monitoring fires alerts after the damage is done — by then a stale model has been serving bad predictions for hours, a database backup cron has silently stopped, or a container has been OOM-killed and restarted twelve times. The goal was a self-healing monitor that detects drift before it becomes an incident and remediates automatically.",
+      role:
+        "Sole architect and engineer. Designed the check framework, wrote the remediation playbooks, and built the CLI and Prometheus integration from scratch.",
+      constraints: [
+        "Every check had to be idempotent and safe to run on a 5-minute cron without side effects",
+        "Auto-fix playbooks could only take reversible actions — restart a container, rotate a log, clear a cache — never destructive ones",
+        "The system had to monitor itself: if Ultron crashes, the host-level systemd watchdog restarts it and alerts independently",
+        "Sub-second check execution across all 62 probes to avoid cron pile-up on commodity hardware",
+      ],
+      outcomes: [
+        { label: "Health Checks", value: "62" },
+        { label: "Auto-Fix Playbooks", value: "14" },
+        { label: "Mean Detection Time", value: "<30s" },
+        { label: "Manual Interventions", value: "0/month" },
+      ],
+      techStack: [
+        { category: "Core", items: ["Go", "Cobra CLI", "YAML config"] },
+        { category: "Monitoring", items: ["Prometheus", "Grafana", "Alertmanager"] },
+        { category: "Targets", items: ["Docker API", "NVIDIA SMI", "PostgreSQL", "Redis"] },
+        { category: "Remediation", items: ["Systemd", "Docker restart", "Log rotation", "Cache flush"] },
+      ],
+      diagramId: "ultron",
+    },
   },
   {
     slug: "ai-agent-teams",
@@ -211,6 +236,31 @@ export const PROJECTS: Project[] = [
     tech: ["TypeScript", "Supabase", "OpenAI", "Claude"],
     large: false,
     animDir: "right",
+    caseStudy: {
+      problem:
+        "Individual AI agents hit a ceiling: they lack context about each other's work, duplicate effort, and can't coordinate multi-step workflows that span domains. The goal was an autonomous fleet where specialized agents collaborate through a shared event bus — each agent owns one domain, publishes findings to the bus, and subscribes to signals from teammates.",
+      role:
+        "Architect and lead engineer. Designed the signal bus protocol, built the orchestrator, and implemented 6 of the 11 agents. Integrated CRM state via Supabase Realtime.",
+      constraints: [
+        "Agents had to be independently deployable — crashing one could never cascade to others",
+        "The signal bus had to guarantee at-least-once delivery without requiring agents to implement retry logic",
+        "CRM writes had to be conflict-free: two agents updating the same contact needed deterministic merge semantics",
+        "Token budgets per agent per cycle had to be hard-capped to prevent runaway LLM costs",
+      ],
+      outcomes: [
+        { label: "Active Agents", value: "11" },
+        { label: "Signals/Day", value: "~750" },
+        { label: "Orchestrator Uptime", value: "99.9%" },
+        { label: "Avg Cycle Time", value: "<5 min" },
+      ],
+      techStack: [
+        { category: "Runtime", items: ["TypeScript", "Node.js", "n8n workflows"] },
+        { category: "Intelligence", items: ["Claude API", "OpenAI API", "Structured outputs"] },
+        { category: "Data", items: ["Supabase", "Realtime subscriptions", "Row-level security"] },
+        { category: "Orchestration", items: ["Signal Bus", "Cron scheduler", "Token budget enforcer"] },
+      ],
+      diagramId: "agents",
+    },
   },
   {
     slug: "texas-rank-rent",

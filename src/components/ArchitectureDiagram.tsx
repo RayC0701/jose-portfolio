@@ -8,6 +8,8 @@ type Props = {
 export default function ArchitectureDiagram({ diagramId, accentColor }: Props) {
   if (diagramId === "sepsis") return <SepsisDiagram accentColor={accentColor} />;
   if (diagramId === "quant") return <QuantDiagram accentColor={accentColor} />;
+  if (diagramId === "ultron") return <UltronDiagram accentColor={accentColor} />;
+  if (diagramId === "agents") return <AgentsDiagram accentColor={accentColor} />;
   return <FridayDiagram accentColor={accentColor} />;
 }
 
@@ -277,6 +279,94 @@ function FridayDiagram({ accentColor }: { accentColor: string }) {
         <Arrow x1={570} y1={250} x2={605} y2={250} accent={a} />
         <Arrow x1={495} y1={280} x2={495} y2={310} accent={a} dashed label="decay" />
         <Arrow x1={495} y1={70} x2={495} y2={130} accent={a} dashed />
+      </svg>
+    </Frame>
+  );
+}
+
+function UltronDiagram({ accentColor }: { accentColor: string }) {
+  const a = accentColor;
+  return (
+    <Frame accent={a}>
+      <svg viewBox="0 0 760 420" className="w-full h-auto" role="img" aria-label="Ultron Overwatch architecture diagram">
+        <Defs accent={a} />
+        <rect x="0" y="0" width="760" height="420" fill="url(#diagram-bg)" />
+
+        <Box x={30} y={40} w={140} h={56} label="Cron Trigger" sub="Every 5 min" accent={a} />
+        <Box x={30} y={130} w={140} h={56} label="CLI Entry" sub="ultron --sweep" accent={a} />
+
+        <Box x={210} y={40} w={160} h={56} label="Docker Checks" sub="Container Health" accent={a} highlight />
+        <Box x={210} y={120} w={160} h={56} label="GPU Checks" sub="NVIDIA SMI" accent={a} />
+        <Box x={210} y={200} w={160} h={56} label="DB Checks" sub="PG + Redis" accent={a} />
+        <Box x={210} y={280} w={160} h={56} label="Cron Checks" sub="Schedule Verify" accent={a} />
+
+        <Box x={420} y={40} w={150} h={56} label="Check Runner" sub="62 Probes" accent={a} highlight />
+        <Box x={420} y={130} w={150} h={56} label="Result Classifier" sub="OK / Warn / Crit" accent={a} />
+        <Box x={420} y={220} w={150} h={56} label="Auto-Fix Engine" sub="14 Playbooks" accent={a} highlight />
+
+        <Box x={610} y={40} w={130} h={56} label="Prometheus" sub="Metrics Export" accent={a} />
+        <Box x={610} y={130} w={130} h={56} label="Alertmanager" sub="Notification" accent={a} />
+        <Box x={610} y={220} w={130} h={56} label="Grafana" sub="Dashboard" accent={a} />
+
+        <Box x={420} y={320} w={320} h={60} label="Systemd Watchdog" sub="Self-Monitoring" accent={a} />
+
+        <Arrow x1={170} y1={68} x2={210} y2={68} accent={a} />
+        <Arrow x1={170} y1={158} x2={210} y2={148} accent={a} />
+        <Arrow x1={370} y1={68} x2={420} y2={68} accent={a} />
+        <Arrow x1={370} y1={148} x2={420} y2={68} accent={a} />
+        <Arrow x1={370} y1={228} x2={420} y2={68} accent={a} />
+        <Arrow x1={370} y1={308} x2={420} y2={68} accent={a} />
+        <Arrow x1={570} y1={68} x2={610} y2={68} accent={a} label="metrics" />
+        <Arrow x1={570} y1={158} x2={610} y2={158} accent={a} label="alerts" />
+        <Arrow x1={420} y1={158} x2={420} y2={220} accent={a} />
+        <Arrow x1={675} y1={96} x2={675} y2={130} accent={a} />
+        <Arrow x1={675} y1={186} x2={675} y2={220} accent={a} />
+        <Arrow x1={570} y1={248} x2={580} y2={320} accent={a} dashed label="restart" />
+      </svg>
+    </Frame>
+  );
+}
+
+function AgentsDiagram({ accentColor }: { accentColor: string }) {
+  const a = accentColor;
+  return (
+    <Frame accent={a}>
+      <svg viewBox="0 0 760 420" className="w-full h-auto" role="img" aria-label="AI Agent Teams architecture diagram">
+        <Defs accent={a} />
+        <rect x="0" y="0" width="760" height="420" fill="url(#diagram-bg)" />
+
+        <Box x={30} y={40} w={140} h={56} label="Content Agent" sub="Research + Draft" accent={a} />
+        <Box x={30} y={120} w={140} h={56} label="Outreach Agent" sub="Email Sequences" accent={a} />
+        <Box x={30} y={200} w={140} h={56} label="Analytics Agent" sub="Metrics + Reports" accent={a} />
+        <Box x={30} y={280} w={140} h={56} label="8 More Agents" sub="Domain-Specific" accent={a} />
+
+        <Box x={220} y={130} w={160} h={60} label="Signal Bus" sub="Event-Driven" accent={a} highlight />
+        <Box x={220} y={40} w={160} h={56} label="Token Enforcer" sub="Budget per Cycle" accent={a} />
+        <Box x={220} y={280} w={160} h={56} label="Cron Scheduler" sub="5 min Cycles" accent={a} />
+
+        <Box x={430} y={40} w={150} h={56} label="Orchestrator" sub="Dispatch + Route" accent={a} highlight />
+        <Box x={430} y={130} w={150} h={56} label="Claude API" sub="Structured Output" accent={a} highlight />
+        <Box x={430} y={220} w={150} h={56} label="OpenAI API" sub="Embeddings" accent={a} />
+
+        <Box x={620} y={40} w={120} h={56} label="Supabase" sub="CRM + State" accent={a} highlight />
+        <Box x={620} y={130} w={120} h={56} label="Realtime Sub" sub="Change Feed" accent={a} />
+        <Box x={620} y={220} w={120} h={56} label="n8n Workflows" sub="Integrations" accent={a} />
+
+        <Box x={220} y={360} w={390} h={40} label="~750 signals/day · 99.9% uptime · <5 min avg cycle" accent={a} highlight />
+
+        <Arrow x1={170} y1={68} x2={220} y2={155} accent={a} />
+        <Arrow x1={170} y1={148} x2={220} y2={160} accent={a} />
+        <Arrow x1={170} y1={228} x2={220} y2={165} accent={a} />
+        <Arrow x1={170} y1={308} x2={220} y2={170} accent={a} />
+        <Arrow x1={380} y1={155} x2={430} y2={68} accent={a} label="dispatch" />
+        <Arrow x1={380} y1={160} x2={430} y2={158} accent={a} />
+        <Arrow x1={380} y1={165} x2={430} y2={248} accent={a} />
+        <Arrow x1={580} y1={68} x2={620} y2={68} accent={a} />
+        <Arrow x1={580} y1={158} x2={620} y2={158} accent={a} />
+        <Arrow x1={580} y1={248} x2={620} y2={248} accent={a} />
+        <Arrow x1={300} y1={190} x2={300} y2={280} accent={a} dashed />
+        <Arrow x1={300} y1={130} x2={300} y2={96} accent={a} dashed label="cap" />
+        <Arrow x1={415} y1={336} x2={415} y2={360} accent={a} dashed />
       </svg>
     </Frame>
   );
