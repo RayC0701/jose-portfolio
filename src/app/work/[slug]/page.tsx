@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCaseStudySlugs, getProject } from "@/lib/projects";
 import ArchitectureDiagram from "@/components/ArchitectureDiagram";
+import { RevealWrapper } from "@/components/RevealWrapper";
 
 type RouteParams = { slug: string };
 
@@ -77,6 +78,7 @@ export default async function CaseStudyPage({
           </p>
         </header>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="01 — Problem">
             The Situation
@@ -85,7 +87,9 @@ export default async function CaseStudyPage({
             {cs.problem}
           </p>
         </section>
+        </RevealWrapper>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="02 — Role">
             What I Owned
@@ -94,7 +98,9 @@ export default async function CaseStudyPage({
             {cs.role}
           </p>
         </section>
+        </RevealWrapper>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="03 — Constraints">
             The Bar
@@ -111,14 +117,18 @@ export default async function CaseStudyPage({
             ))}
           </ul>
         </section>
+        </RevealWrapper>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="04 — Architecture">
             How It Works
           </SectionHeading>
           <ArchitectureDiagram diagramId={cs.diagramId} accentColor={accent} />
         </section>
+        </RevealWrapper>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="05 — Stack">
             Engineering Choices
@@ -152,7 +162,9 @@ export default async function CaseStudyPage({
             ))}
           </div>
         </section>
+        </RevealWrapper>
 
+        <RevealWrapper>
         <section className="mb-20">
           <SectionHeading accent={accent} eyebrow="06 — Outcomes">
             What Shipped
@@ -177,6 +189,7 @@ export default async function CaseStudyPage({
             ))}
           </div>
         </section>
+        </RevealWrapper>
 
         <div className="mt-24 border-t border-white/10 pt-10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <Link

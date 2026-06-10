@@ -153,7 +153,20 @@ export default function ContactSection() {
         </RevealWrapper>
       </div>
 
-      <div className="relative z-10 mt-32 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
+      <div aria-hidden="true" className="relative z-10 mt-28 -mb-6 overflow-hidden pointer-events-none select-none">
+        <p
+          className="font-display text-center font-bold leading-[0.8] tracking-tight text-[clamp(4rem,16vw,15rem)] text-transparent whitespace-nowrap"
+          style={{
+            WebkitTextStroke: "1px rgba(255,255,255,0.07)",
+            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 88%)",
+            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 88%)",
+          }}
+        >
+          CANALES
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-6 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/20 tracking-wider">
             &copy; {new Date().getFullYear()} Jose Canales. All rights reserved.

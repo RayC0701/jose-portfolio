@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import ScrollProgress from "@/components/ScrollProgress";
 import HeroSection from "@/components/HeroSection";
 import TechMarquee from "@/components/TechMarquee";
 import ProjectCarousel from "@/components/ProjectCarousel";
@@ -14,7 +13,6 @@ import ContactSection from "@/components/ContactSection";
 export default function Home() {
   return (
     <main>
-      <ScrollProgress />
       <Navbar />
       <HeroSection />
       <TechMarquee />
