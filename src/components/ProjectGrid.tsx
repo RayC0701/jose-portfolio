@@ -68,15 +68,22 @@ function BentoCard({
         src={project.image}
         alt={project.title}
         fill
-        className="object-cover transition-opacity duration-500"
-        style={{ opacity: isHovered ? 0.35 : 0.2 }}
+        className="object-cover object-top transition-opacity duration-500"
+        style={{ opacity: isHovered ? 0.55 : 0.38 }}
         sizes="(max-width: 768px) 100vw, 50vw"
       />
       <div
         className="absolute inset-0 transition-opacity duration-500"
         style={{
           background: project.gradient,
-          opacity: isHovered ? 0.45 : 0.25,
+          opacity: isHovered ? 0.3 : 0.18,
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(10,10,11,0.96) 0%, rgba(10,10,11,0.8) 38%, rgba(10,10,11,0.45) 70%, rgba(10,10,11,0.2) 100%)",
         }}
       />
 
