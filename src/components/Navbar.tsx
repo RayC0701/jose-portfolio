@@ -27,8 +27,27 @@ function getScrolledServer(): boolean {
 export default function Navbar() {
   const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getScrolledServer);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const sections = NAV_ITEMS.map((item) =>
+      document.getElementById(item.href.slice(1))
+    ).filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-35% 0px -55% 0px" }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   const closeMobile = useCallback(() => {
     setMobileOpen(false);
@@ -75,15 +94,26 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:flex items-center gap-8">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.href.slice(1);
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`relative text-xs tracking-[0.2em] uppercase transition-colors duration-300 ${
+                    isActive ? "text-white" : "text-white/50 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute -bottom-1.5 left-0 right-0 h-px origin-left bg-gradient-to-r from-blue-500 via-purple-500 to-transparent transition-all duration-500 ${
+                      isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+                    }`}
+                  />
+                </a>
+              );
+            })}
             <a
               href="https://cal.com/josecanales/ai-consulting"
               target="_blank"

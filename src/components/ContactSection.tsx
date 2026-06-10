@@ -1,4 +1,5 @@
 import { RevealWrapper } from "./RevealWrapper";
+import MagneticButton from "./MagneticButton";
 
 const ENGAGEMENT_MODELS = [
   {
@@ -106,6 +107,7 @@ export default function ContactSection() {
         </div>
 
         <RevealWrapper className="text-center" delay={500}>
+          <MagneticButton>
           <a
             href="https://cal.com/josecanales/ai-consulting"
             target="_blank"
@@ -129,6 +131,7 @@ export default function ContactSection() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </a>
+          </MagneticButton>
 
           <div className="mt-16 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
             {SOCIAL_LINKS.map((link) => {
