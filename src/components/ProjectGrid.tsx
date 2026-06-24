@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { useIntersection } from "./useIntersection";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const ANIM_TRANSFORMS: Record<Project["animDir"], string> = {
   left: "translateX(-40px) translateY(20px)",
@@ -22,7 +23,30 @@ function BentoCard({
   visible: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = usePrefersReducedMotion();
   const hasStudy = !!project.caseStudy;
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = wrapRef.current;
+    if (!el || reduceMotion) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    el.style.setProperty("--mx", `${x}px`);
+    el.style.setProperty("--my", `${y}px`);
+    el.style.setProperty("--ry", `${(x / rect.width - 0.5) * 4}deg`);
+    el.style.setProperty("--rx", `${(y / rect.height - 0.5) * -4}deg`);
+  };
+
+  const handleMouseLeave = () => {
+    const el = wrapRef.current;
+    if (el) {
+      el.style.setProperty("--rx", "0deg");
+      el.style.setProperty("--ry", "0deg");
+    }
+    setIsHovered(false);
+  };
 
   const cardInner = (
     <div
@@ -31,7 +55,9 @@ function BentoCard({
         background: "rgba(17, 17, 19, 0.75)",
         backdropFilter: "blur(24px)",
         border: `1px solid ${isHovered ? project.accentColor + "40" : "rgba(255,255,255,0.06)"}`,
-        transform: isHovered ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
+        transform: isHovered
+          ? "perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px) scale(1.02)"
+          : "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)",
         boxShadow: isHovered
           ? `0 0 30px ${project.glowColor}, 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)`
           : "0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)",
@@ -42,15 +68,22 @@ function BentoCard({
         src={project.image}
         alt={project.title}
         fill
-        className="object-cover transition-opacity duration-500"
-        style={{ opacity: isHovered ? 0.35 : 0.2 }}
+        className="object-cover object-top transition-opacity duration-500"
+        style={{ opacity: isHovered ? 0.55 : 0.38 }}
         sizes="(max-width: 768px) 100vw, 50vw"
       />
       <div
         className="absolute inset-0 transition-opacity duration-500"
         style={{
           background: project.gradient,
-          opacity: isHovered ? 0.45 : 0.25,
+          opacity: isHovered ? 0.3 : 0.18,
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(10,10,11,0.96) 0%, rgba(10,10,11,0.8) 38%, rgba(10,10,11,0.45) 70%, rgba(10,10,11,0.2) 100%)",
         }}
       />
 
@@ -61,6 +94,14 @@ function BentoCard({
         style={{
           background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)",
           opacity: isHovered ? 1 : 0.4,
+        }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), ${project.accentColor}18, transparent 65%)`,
+          opacity: isHovered && !reduceMotion ? 1 : 0,
         }}
       />
 
@@ -164,6 +205,7 @@ function BentoCard({
 
   return (
     <div
+      ref={wrapRef}
       className={`group relative ${project.large ? "md:col-span-2 md:row-span-2" : ""}`}
       style={{
         opacity: visible ? 1 : 0,
@@ -174,7 +216,8 @@ function BentoCard({
         zIndex: isHovered ? 20 : 10 - index,
       }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       {cardInner}
     </div>

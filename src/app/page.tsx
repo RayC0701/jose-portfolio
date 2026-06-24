@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import TechMarquee from "@/components/TechMarquee";
 import ProjectCarousel from "@/components/ProjectCarousel";
 import ProjectGrid from "@/components/ProjectGrid";
 import DramaticSection from "@/components/DramaticSection";
@@ -14,6 +15,7 @@ export default function Home() {
     <main>
       <Navbar />
       <HeroSection />
+      <TechMarquee />
       <ProjectCarousel />
       <ProjectGrid />
       <DramaticSection />

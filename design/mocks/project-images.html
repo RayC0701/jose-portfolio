@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .mono { font-family: "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+
+  .scene {
+    width: 1200px; height: 630px;
+    position: relative; overflow: hidden;
+    background: #0B0D10;
+    color: #cdd3dc;
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(110px); pointer-events: none; }
+
+  .panel {
+    background: rgba(17, 20, 26, 0.85);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+  }
+  .label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #5b6470; }
+  .kpi-num { font-size: 26px; font-weight: 700; color: #fff; }
+
+  .titlebar {
+    height: 44px; display: flex; align-items: center; gap: 14px;
+    padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 11px; height: 11px; border-radius: 50%; background: #2a2f38; }
+  .app-name { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 600; }
+
+  table { border-collapse: collapse; width: 100%; }
+  th { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #5b6470; text-align: left; padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  td { font-size: 12px; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+  .pill { display: inline-block; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; }
+  .bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ════════ 1. SEPSIS AI — clinical risk dashboard ════════ -->
+<div class="scene" id="sepsis-ai">
+  <div class="glow" style="width:600px;height:400px;top:-150px;right:-100px;background:rgba(34,211,238,0.10)"></div>
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <span class="app-name" style="color:#22d3ee">Sepsis Watch</span>
+    <span class="pill" style="background:rgba(34,211,238,0.1);color:#22d3ee;border:1px solid rgba(34,211,238,0.3)">FHIR R4 LIVE</span>
+    <span style="margin-left:auto" class="label">ICU — WARD 4</span>
+  </div>
+  <div style="display:flex; gap:16px; padding:20px;">
+    <div style="flex:2.2">
+      <div style="display:flex; gap:14px; margin-bottom:16px;">
+        <div class="panel" style="flex:1; padding:14px 16px"><div class="label">Patients Monitored</div><div class="kpi-num">48</div></div>
+        <div class="panel" style="flex:1; padding:14px 16px"><div class="label">Inference p95</div><div class="kpi-num" style="color:#22d3ee">&lt;800ms</div></div>
+        <div class="panel" style="flex:1; padding:14px 16px"><div class="label">Active Alerts</div><div class="kpi-num" style="color:#f87171">1</div></div>
+      </div>
+      <div class="panel">
+        <table id="pt-table">
+          <tr><th>Bed</th><th>Patient</th><th>HR</th><th>Temp</th><th>Lactate</th><th>Sepsis Risk</th><th></th></tr>
+        </table>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
+      <div class="panel" style="padding:16px; border-color:rgba(248,113,113,0.4); background:rgba(248,113,113,0.06)">
+        <div class="label" style="color:#f87171">⚠ High Risk — Bed 12</div>
+        <div style="font-size:13px; margin-top:8px; line-height:1.5">Risk score 0.91 ↑ over 3h window. Lactate trending up. Recommend sepsis bundle review.</div>
+        <div style="margin-top:10px"><span class="pill" style="background:rgba(248,113,113,0.15);color:#f87171">Notify Charge RN</span></div>
+      </div>
+      <div class="panel" style="padding:16px; flex:1">
+        <div class="label" style="margin-bottom:10px">Risk Trajectory — Bed 12</div>
+        <svg width="100%" height="120" viewBox="0 0 300 120" preserveAspectRatio="none">
+          <polyline fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" points="0,100 300,100"/>
+          <polyline fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" points="0,60 300,60"/>
+          <polyline fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" points="0,20 300,20"/>
+          <polyline fill="none" stroke="#22d3ee" stroke-width="2.5" points="0,95 40,92 80,88 120,80 160,70 200,52 240,34 280,18 300,14"/>
+          <circle cx="300" cy="14" r="4" fill="#f87171"/>
+        </svg>
+        <div style="display:flex; justify-content:space-between" class="label"><span>-6h</span><span>now</span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const rows = [
+      ["04","PT-2210","78","37.1","1.0",0.12],["07","PT-8841","84","37.4","1.3",0.21],
+      ["09","PT-3375","91","38.0","1.8",0.44],["12","PT-4821","112","38.9","3.4",0.91],
+      ["15","PT-9162","75","36.8","0.9",0.08],["18","PT-5530","88","37.6","1.5",0.33],
+    ];
+    document.getElementById("pt-table").innerHTML += rows.map(([bed,id,hr,t,lac,r]) => {
+      const col = r > 0.8 ? "#f87171" : r > 0.4 ? "#fbbf24" : "#34d399";
+      return `<tr ${r>0.8?'style="background:rgba(248,113,113,0.05)"':''}>
+        <td class="mono">${bed}</td><td class="mono">${id}</td><td>${hr}</td><td>${t}°</td><td>${lac}</td>
+        <td style="width:160px"><div style="display:flex;align-items:center;gap:8px">
+          <div class="bar" style="flex:1"><i style="width:${r*100}%;background:${col}"></i></div>
+          <span class="mono" style="color:${col};font-size:11px">${r.toFixed(2)}</span></div></td>
+        <td>${r>0.8?'<span class="pill" style="background:rgba(248,113,113,0.15);color:#f87171">ALERT</span>':''}</td></tr>`;
+    }).join("");
+  </script>
+</div>
+
+<!-- ════════ 2. QUANT PLATFORM — trading dashboard ════════ -->
+<div class="scene" id="quant-platform">
+  <div class="glow" style="width:700px;height:400px;top:-120px;left:200px;background:rgba(251,191,36,0.08)"></div>
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <span class="app-name" style="color:#fbbf24">Quant Engine</span>
+    <span class="pill" style="background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.3)">LIVE ROUTING</span>
+    <span style="margin-left:auto" class="mono label">NYSE 09:42:17 ET</span>
+  </div>
+  <div style="display:flex; gap:16px; padding:20px;">
+    <div style="flex:2.4">
+      <div style="display:flex; gap:14px; margin-bottom:16px;">
+        <div class="panel" style="flex:1.2; padding:14px 16px"><div class="label">Verified Net PnL</div><div class="kpi-num" style="color:#34d399">+$193K</div></div>
+        <div class="panel" style="flex:1; padding:14px 16px"><div class="label">Signals / 1h</div><div class="kpi-num">43</div></div>
+        <div class="panel" style="flex:1; padding:14px 16px"><div class="label">Signals / 24h</div><div class="kpi-num">757</div></div>
+      </div>
+      <div class="panel" style="padding:16px">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+          <span class="label">AAPL — LightGBM ensemble</span><span class="mono" style="color:#34d399;font-size:12px">312.20 ▲</span>
+        </div>
+        <svg width="100%" height="300" viewBox="0 0 640 300" preserveAspectRatio="none" id="candles"></svg>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
+      <div class="panel" style="flex:1">
+        <table id="sig-table"><tr><th>Signal</th><th>Conf</th><th></th></tr></table>
+      </div>
+      <div class="panel" style="padding:14px 16px">
+        <div class="label" style="margin-bottom:8px">VolTarget Gate</div>
+        <div style="display:flex; align-items:center; gap:10px">
+          <span class="pill" style="background:rgba(52,211,153,0.12);color:#34d399">OPEN</span>
+          <span class="mono" style="font-size:11px; color:#5b6470">idle-cash → SGOV / BIL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let svg = "", x = 8, price = 100;
+    for (let i = 0; i < 42; i++) {
+      const o = price, c = price + (Math.sin(i * 1.7) * 9 + Math.cos(i * 0.6) * 6) * (i%7===3?-0.6:1) * 0.8;
+      const hi = Math.max(o,c) + 4 + (i%5), lo = Math.min(o,c) - 4 - (i%3);
+      const up = c >= o, col = up ? "#34d399" : "#f87171";
+      const y = v => 520 - v * 3.0;
+      svg += `<line x1="${x+5}" y1="${y(hi)}" x2="${x+5}" y2="${y(lo)}" stroke="${col}" stroke-width="1.5"/>
+              <rect x="${x}" y="${y(Math.max(o,c))}" width="10" height="${Math.max(3, Math.abs(y(o)-y(c)))}" fill="${col}" rx="1.5"/>`;
+      price = c + 1.1; x += 15;
+    }
+    document.getElementById("candles").innerHTML = svg;
+    const sigs = [["NVDA LONG","0.87","#34d399"],["AAPL LONG","0.81","#34d399"],["TSLA FLAT","0.64","#fbbf24"],["MSFT LONG","0.79","#34d399"],["AMD EXIT","0.71","#f87171"],["SPY HEDGE","0.68","#fbbf24"]];
+    document.getElementById("sig-table").innerHTML += sigs.map(([s,c,col]) =>
+      `<tr><td class="mono" style="font-size:11px">${s}</td><td class="mono" style="color:${col}">${c}</td>
+       <td><div class="bar" style="width:46px"><i style="width:${c*100}%;background:${col}"></i></div></td></tr>`).join("");
+  </script>
+</div>
+
+<!-- ════════ 3. FRIDAY AI — assistant with memory graph ════════ -->
+<div class="scene" id="friday-ai">
+  <div class="glow" style="width:600px;height:450px;bottom:-200px;left:-100px;background:rgba(167,139,250,0.10)"></div>
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <span class="app-name" style="color:#a78bfa">Friday</span>
+    <span class="pill" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.3)">NEURAL MEMORY</span>
+    <span style="margin-left:auto" class="label">neo4j · connected</span>
+  </div>
+  <div style="display:flex; gap:16px; padding:20px;">
+    <div style="flex:1.6; display:flex; flex-direction:column; gap:12px">
+      <div style="align-self:flex-end; max-width:75%; background:rgba(167,139,250,0.14); border:1px solid rgba(167,139,250,0.25); border-radius:14px 14px 4px 14px; padding:12px 16px; font-size:13.5px; line-height:1.5">
+        What broke overnight, and did anything need my attention?
+      </div>
+      <div class="panel" style="align-self:flex-start; max-width:88%; border-radius:14px 14px 14px 4px; padding:14px 16px; font-size:13.5px; line-height:1.65">
+        Quiet night. <b style="color:#fff">4 n8n workflow retries</b> resolved on their own, and Ultron's sweep finished
+        <b style="color:#34d399">54 ok / 4 warn / 0 crit</b>. One thing for you: the quant model artifact is
+        <b style="color:#fbbf24">31 days old</b> — retrain is expected weekly. Want me to queue it?
+        <div style="display:flex; gap:8px; margin-top:12px">
+          <span class="pill" style="background:rgba(167,139,250,0.15);color:#a78bfa">memory: infra.ultron</span>
+          <span class="pill" style="background:rgba(167,139,250,0.15);color:#a78bfa">tool: docker_ps</span>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:auto; display:flex; align-items:center; gap:12px; padding:12px 16px;">
+        <svg width="120" height="26" viewBox="0 0 120 26">
+          <g fill="#a78bfa">
+            <rect x="2" y="10" width="3" height="6" rx="1.5"/><rect x="8" y="7" width="3" height="12" rx="1.5"/>
+            <rect x="14" y="3" width="3" height="20" rx="1.5"/><rect x="20" y="8" width="3" height="10" rx="1.5"/>
+            <rect x="26" y="5" width="3" height="16" rx="1.5"/><rect x="32" y="10" width="3" height="6" rx="1.5"/>
+            <rect x="38" y="7" width="3" height="12" rx="1.5"/><rect x="44" y="11" width="3" height="4" rx="1.5"/>
+            <rect x="50" y="6" width="3" height="14" rx="1.5"/><rect x="56" y="9" width="3" height="8" rx="1.5"/>
+          </g>
+        </svg>
+        <span style="font-size:12px; color:#5b6470">Listening…</span>
+        <span class="mono" style="margin-left:auto; font-size:11px; color:#5b6470">⌘K</span>
+      </div>
+    </div>
+    <div class="panel" style="flex:1; padding:16px">
+      <div class="label" style="margin-bottom:6px">Memory Graph</div>
+      <svg width="100%" height="430" viewBox="0 0 330 430">
+        <g stroke="rgba(167,139,250,0.25)" stroke-width="1.2">
+          <line x1="165" y1="215" x2="70" y2="90"/><line x1="165" y1="215" x2="265" y2="80"/>
+          <line x1="165" y1="215" x2="55" y2="300"/><line x1="165" y1="215" x2="270" y2="330"/>
+          <line x1="165" y1="215" x2="160" y2="390"/><line x1="70" y1="90" x2="265" y2="80"/>
+          <line x1="270" y1="330" x2="160" y2="390"/>
+        </g>
+        <g font-size="10" font-family="monospace">
+          <circle cx="165" cy="215" r="26" fill="rgba(167,139,250,0.18)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="165" y="219" fill="#fff" text-anchor="middle">YOU</text>
+          <circle cx="70" cy="90" r="20" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.5)"/>
+          <text x="70" y="94" fill="#cdd3dc" text-anchor="middle">infra</text>
+          <circle cx="265" cy="80" r="20" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.5)"/>
+          <text x="265" y="84" fill="#cdd3dc" text-anchor="middle">quant</text>
+          <circle cx="55" cy="300" r="20" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.5)"/>
+          <text x="55" y="304" fill="#cdd3dc" text-anchor="middle">cal</text>
+          <circle cx="270" cy="330" r="20" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.5)"/>
+          <text x="270" y="334" fill="#cdd3dc" text-anchor="middle">health</text>
+          <circle cx="160" cy="390" r="20" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.5)"/>
+          <text x="160" y="394" fill="#cdd3dc" text-anchor="middle">home</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 4. ULTRON OVERWATCH — ops terminal ════════ -->
+<div class="scene" id="ultron-overwatch" style="background:#0A0C0E">
+  <div class="glow" style="width:700px;height:400px;top:-150px;left:250px;background:rgba(251,146,60,0.08)"></div>
+  <div style="padding:26px 30px">
+    <div class="panel" style="border-radius:14px; overflow:hidden">
+      <div class="titlebar" style="background:rgba(255,255,255,0.02)">
+        <div class="dots"><span style="background:#f87171"></span><span style="background:#fbbf24"></span><span style="background:#34d399"></span></div>
+        <span class="mono" style="font-size:12px; color:#5b6470">jose@andraia — ultron --status</span>
+        <span class="pill" style="margin-left:auto; background:rgba(251,146,60,0.12); color:#fb923c; border:1px solid rgba(251,146,60,0.3)">SELF-HEALING</span>
+      </div>
+      <div class="mono" style="padding:20px 24px; font-size:13.5px; line-height:1.85">
+        <div><span style="color:#5b6470">$</span> <span style="color:#fff">ultron --status</span></div>
+        <div><span style="color:#22d3ee">[INFO]</span> Signal pipeline healthy: 43 signals/1h, 757 signals/24h</div>
+        <div><span style="color:#22d3ee">[INFO]</span> Finnhub API key valid (AAPL current=$312.20)</div>
+        <div><span style="color:#fbbf24">[WARN]</span> Model artifact is 31 days old (retrain expected weekly)</div>
+        <div><span style="color:#22d3ee">[INFO]</span> Cron jobs: signal_resolver <span style="color:#34d399">✓</span> circuit_breaker <span style="color:#34d399">✓</span> pg_backup <span style="color:#34d399">✓</span></div>
+        <div><span style="color:#22d3ee">[INFO]</span> trading_intel_collector <span style="color:#34d399">✓</span> vault_sync_heartbeat <span style="color:#34d399">✓</span></div>
+        <div><span style="color:#fbbf24">[WARN]</span> 4 n8n workflow failures in last 60min → <span style="color:#fb923c">auto-fix playbook dispatched</span></div>
+        <div><span style="color:#22d3ee">[INFO]</span> Playbook n8n_retry_stalled: 4/4 workflows recovered in 38s</div>
+        <div style="margin-top:10px; color:#34d399">━━━ Ultron sweep: 60 checks — 54 ok, 4 warn, 0 crit ━━━</div>
+        <div style="margin-top:4px"><span style="color:#5b6470">$</span> <span style="background:#fb923c; width:9px; display:inline-block">&nbsp;</span></div>
+      </div>
+    </div>
+    <div style="display:flex; gap:14px; margin-top:18px">
+      <div class="panel" style="flex:1; padding:13px 16px"><div class="label">Health Checks</div><div class="kpi-num">62</div></div>
+      <div class="panel" style="flex:1; padding:13px 16px"><div class="label">Containers</div><div class="kpi-num">17+</div></div>
+      <div class="panel" style="flex:1; padding:13px 16px"><div class="label">Auto-Fix Playbooks</div><div class="kpi-num" style="color:#fb923c">ARMED</div></div>
+      <div class="panel" style="flex:1; padding:13px 16px"><div class="label">Critical</div><div class="kpi-num" style="color:#34d399">0</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 5. AI AGENT TEAMS — signal bus orchestration ════════ -->
+<div class="scene" id="ai-agent-teams">
+  <div class="glow" style="width:700px;height:450px;top:-180px;right:-120px;background:rgba(45,212,191,0.09)"></div>
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <span class="app-name" style="color:#2dd4bf">Agent Fleet</span>
+    <span class="pill" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3)">11 AGENTS · EVENT-DRIVEN</span>
+    <span style="margin-left:auto" class="label">supabase · state synced</span>
+  </div>
+  <div style="padding:24px 30px">
+    <svg width="100%" height="350" viewBox="0 0 1140 350">
+      <defs>
+        <linearGradient id="bus" x1="0" x2="1">
+          <stop offset="0" stop-color="rgba(45,212,191,0)"/><stop offset="0.5" stop-color="#2dd4bf"/><stop offset="1" stop-color="rgba(45,212,191,0)"/>
+        </linearGradient>
+      </defs>
+      <rect x="40" y="170" width="1060" height="3" fill="url(#bus)" rx="1.5"/>
+      <text x="570" y="160" fill="#2dd4bf" font-size="11" letter-spacing="4" text-anchor="middle" font-family="monospace">SIGNAL BUS</text>
+      <g id="agents" font-family="monospace" font-size="11"></g>
+    </svg>
+    <div class="panel" style="margin-top:6px">
+      <table>
+        <tr><th>Event</th><th>Producer → Consumer</th><th>Latency</th><th>Status</th></tr>
+        <tr><td class="mono">research.brief.ready</td><td class="mono" style="color:#5b6470">scout → strategist</td><td class="mono">42ms</td><td><span class="pill" style="background:rgba(52,211,153,0.12);color:#34d399">DELIVERED</span></td></tr>
+        <tr><td class="mono">draft.review.request</td><td class="mono" style="color:#5b6470">writer → critic</td><td class="mono">38ms</td><td><span class="pill" style="background:rgba(52,211,153,0.12);color:#34d399">DELIVERED</span></td></tr>
+        <tr><td class="mono">publish.approved</td><td class="mono" style="color:#5b6470">critic → publisher</td><td class="mono">51ms</td><td><span class="pill" style="background:rgba(45,212,191,0.12);color:#2dd4bf">IN FLIGHT</span></td></tr>
+      </table>
+    </div>
+  </div>
+  <script>
+    const agents = [
+      ["scout", 110, 60], ["strategist", 300, 60], ["writer", 490, 60], ["critic", 680, 60], ["publisher", 870, 60],
+      ["monitor", 110, 285], ["resolver", 300, 285], ["intel", 490, 285], ["vault", 680, 285], ["circuit", 870, 285], ["router", 1030, 285],
+    ];
+    document.getElementById("agents").innerHTML = agents.map(([name, x, y]) => {
+      const top = y < 170;
+      return `<line x1="${x}" y1="${top ? y + 26 : y - 26}" x2="${x}" y2="171" stroke="rgba(45,212,191,0.3)" stroke-width="1.2" stroke-dasharray="3 4"/>
+        <circle cx="${x}" cy="171" r="4" fill="#2dd4bf"/>
+        <rect x="${x-58}" y="${y-26}" width="116" height="52" rx="10" fill="rgba(17,20,26,0.9)" stroke="rgba(45,212,191,0.35)" stroke-width="1.2"/>
+        <circle cx="${x-40}" cy="${y}" r="3.5" fill="#34d399"/>
+        <text x="${x+6}" y="${y+4}" fill="#cdd3dc" text-anchor="middle">${name}</text>`;
+    }).join("");
+  </script>
+</div>
+
+<!-- ════════ 6. TEXAS RANK & RENT — site network console ════════ -->
+<div class="scene" id="texas-rank-rent">
+  <div class="glow" style="width:650px;height:400px;bottom:-180px;right:-80px;background:rgba(217,119,6,0.10)"></div>
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <span class="app-name" style="color:#fcd34d">Rank &amp; Rent Console</span>
+    <span class="pill" style="background:rgba(252,211,77,0.1);color:#fcd34d;border:1px solid rgba(252,211,77,0.3)">270 SITES · 1 TURBOREPO</span>
+    <span style="margin-left:auto" class="label">vercel · all deployments ready</span>
+  </div>
+  <div style="display:flex; gap:16px; padding:20px; height:586px;">
+    <div style="flex:2.3">
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); grid-auto-rows:1fr; gap:12px; height:100%" id="sites"></div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px">
+      <div class="panel" style="padding:14px 16px"><div class="label">Network</div><div class="kpi-num">270 <span style="font-size:13px; color:#5b6470; font-weight:400">sites</span></div></div>
+      <div class="panel" style="flex:1; padding:16px">
+        <div class="label" style="margin-bottom:12px">Latest Deploys</div>
+        <div class="mono" style="font-size:11.5px; line-height:2.1; color:#8b93a0">
+          <div><span style="color:#34d399">●</span> plano-roofing <span style="float:right; color:#5b6470">28s</span></div>
+          <div><span style="color:#34d399">●</span> katy-fencing <span style="float:right; color:#5b6470">31s</span></div>
+          <div><span style="color:#34d399">●</span> frisco-hvac <span style="float:right; color:#5b6470">26s</span></div>
+          <div><span style="color:#34d399">●</span> waco-concrete <span style="float:right; color:#5b6470">29s</span></div>
+          <div><span style="color:#fcd34d">●</span> tyler-towing <span style="float:right; color:#5b6470">building…</span></div>
+        </div>
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06)" class="label">
+          shared tokens → per-vertical content layer
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const cities = [
+      ["Plano","Roofing"],["Katy","Fencing"],["Frisco","HVAC"],["Waco","Concrete"],
+      ["Tyler","Towing"],["Allen","Plumbing"],["Lubbock","Paving"],["Laredo","Solar"],
+      ["Abilene","Remodel"],["Denton","Tree Care"],["Odessa","Welding"],["McAllen","Pools"],
+      ["El Paso","Stucco"],["Temple","Gutters"],["Conroe","Decks"],["Killeen","Movers"],
+    ];
+    document.getElementById("sites").innerHTML = cities.map(([city, vert], i) =>
+      `<div class="panel" style="padding:13px 14px">
+        <div style="display:flex; align-items:center; gap:7px; margin-bottom:7px">
+          <span style="width:7px;height:7px;border-radius:50%;background:${i===4?'#fcd34d':'#34d399'}"></span>
+          <span style="font-size:13px; font-weight:600; color:#fff">${city}</span>
+        </div>
+        <div class="label" style="letter-spacing:0.15em">${vert}</div>
+        <div class="bar" style="margin-top:10px"><i style="width:${[88,76,92,70,55,81,64,73,68,85,60,78][i]}%;background:rgba(252,211,77,0.7)"></i></div>
+      </div>`).join("");
+  </script>
+</div>
+
+</body>
+</html>
