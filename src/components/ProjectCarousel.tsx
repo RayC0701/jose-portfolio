@@ -6,6 +6,7 @@ import { useRef, useEffect, useState, useCallback, type MouseEvent } from "react
 import { PROJECTS, type Project } from "@/lib/projects";
 import { useIntersection } from "./useIntersection";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import LiveProjectScene from "./LiveProjectScene";
 
 function ProjectCard({
   project,
@@ -102,6 +103,9 @@ function ProjectCard({
             />
             <div className="absolute inset-0 bg-black/20" />
             <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#111113] to-transparent" />
+            {isCenter && !reduceMotion && (
+              <LiveProjectScene accentColor={project.accentColor} />
+            )}
           </div>
 
           <div className="p-6 relative">

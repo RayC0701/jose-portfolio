@@ -1,5 +1,6 @@
 import { RevealWrapper } from "./RevealWrapper";
 import MagneticButton from "./MagneticButton";
+import LogoMark from "./LogoMark";
 
 const ENGAGEMENT_MODELS = [
   {
@@ -168,6 +169,12 @@ export default function ContactSection() {
 
       <div className="relative z-10 mt-6 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <a href="#" aria-label="canales.md — back to top" className="flex items-center gap-2.5">
+            <LogoMark size={22} idSuffix="footer" />
+            <span className="text-xs font-bold tracking-[0.3em] uppercase text-white/50">
+              canales.md
+            </span>
+          </a>
           <p className="text-xs text-white/20 tracking-wider">
             &copy; {new Date().getFullYear()} Jose Canales. All rights reserved.
           </p>

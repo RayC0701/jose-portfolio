@@ -277,6 +277,39 @@ body {
   }
 }
 
+/* Live project scene — motion overlay on the active carousel card */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lps-sheen {
+  0% { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+  35% { opacity: 1; }
+  70%, 100% { transform: translateX(130%) skewX(-18deg); opacity: 0; }
+}
+
+@keyframes lps-eq {
+  0%, 100% { transform: scaleY(0.28); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes lps-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.78); }
+}
+
+@keyframes lps-scanline {
+  0% { transform: translateY(-10%); opacity: 0; }
+  20%, 80% { opacity: 0.5; }
+  100% { transform: translateY(900%); opacity: 0; }
+}
+
+.lps-sheen { animation: lps-sheen 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.lps-scanline { animation: lps-scanline 3.8s linear infinite; }
+.lps-bar { transform-origin: bottom; animation: lps-eq 0.9s ease-in-out infinite; }
+.lps-dot { animation: lps-live 1.4s ease-in-out infinite; }
+
 /* Infinite tech marquee — track holds two identical copies, so a -50% shift loops seamlessly */
 @keyframes marquee {
   to {

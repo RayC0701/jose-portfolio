@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family:"Oswald"; src:url("/home/user/jose-portfolio/src/app/fonts/oswald-700-latin.woff2") format("woff2"); font-weight:700; }
+  @font-face { font-family:"Geist"; src:url("/home/user/jose-portfolio/src/app/fonts/geist-latin.woff2") format("woff2"); font-weight:100 900; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1200px; height:630px; background:#0A0A0B; overflow:hidden; font-family:"Geist",system-ui,sans-serif; position:relative; }
+
+  /* hero glow, matching the site */
+  .glow1 { position:absolute; width:900px; height:620px; left:-160px; top:-120px; border-radius:50%;
+           background:radial-gradient(ellipse, rgba(59,130,246,0.16), rgba(139,92,246,0.06) 45%, transparent 72%); }
+  .glow2 { position:absolute; width:600px; height:600px; right:-120px; bottom:-220px; border-radius:50%;
+           background:radial-gradient(circle, rgba(245,158,11,0.07), transparent 70%); }
+
+  /* right-side project collage */
+  .collage { position:absolute; right:-40px; top:-30px; width:560px; height:690px; }
+  .collage img { position:absolute; width:520px; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
+                 box-shadow:0 30px 80px rgba(0,0,0,0.6); }
+  .collage .c1 { top:70px; right:-130px; transform:rotate(8deg); }
+  .collage .c2 { top:360px; right:-90px; transform:rotate(8deg); }
+  .collage-fade { position:absolute; right:0; top:0; width:760px; height:630px;
+                  background:linear-gradient(90deg, #0A0A0B 8%, rgba(10,10,11,0.72) 38%, rgba(10,10,11,0.25) 100%); }
+
+  .content { position:absolute; inset:0; padding:72px 80px; display:flex; flex-direction:column; }
+
+  .lockup { display:flex; align-items:center; gap:14px; }
+  .lockup .wm { font-size:20px; font-weight:700; letter-spacing:0.32em; text-transform:uppercase; color:rgba(255,255,255,0.92); }
+
+  .eyebrow { margin-top:auto; font-size:18px; letter-spacing:0.34em; text-transform:uppercase; color:rgba(255,255,255,0.42); }
+
+  h1 { font-family:"Oswald"; font-weight:700; font-size:118px; line-height:0.86; letter-spacing:-1px; color:#fff; margin-top:18px; }
+  h1 .grad { background:linear-gradient(110deg,#60A5FA,#A78BFA 45%,#FBBF24); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+
+  .sub { margin-top:22px; font-size:25px; font-weight:300; color:rgba(255,255,255,0.55); max-width:620px; line-height:1.35; }
+
+  .chips { margin-top:34px; display:flex; gap:12px; flex-wrap:wrap; }
+  .chip { font-size:16px; letter-spacing:0.02em; padding:9px 18px; border-radius:999px;
+          border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.78); }
+  .chip b { color:#fff; font-weight:600; }
+  .chip.accent { border-color:rgba(52,211,153,0.35); background:rgba(52,211,153,0.08); color:#6ee7b7; }
+  .chip.accent b { color:#a7f3d0; }
+
+  .topbar { position:absolute; top:0; left:0; right:0; height:5px;
+            background:linear-gradient(90deg,#3B82F6,#8B5CF6,#F59E0B); }
+</style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+
+  <div class="collage">
+    <img class="c1" src="/home/user/jose-portfolio/public/projects/sepsis-ai.png">
+    <img class="c2" src="/home/user/jose-portfolio/public/projects/quant-platform.png">
+  </div>
+  <div class="collage-fade"></div>
+
+  <div class="content">
+    <div class="lockup">
+      <svg viewBox="0 0 512 512" width="40" height="40">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset=".5" stop-color="#8B5CF6"/><stop offset="1" stop-color="#F59E0B"/></linearGradient>
+          <linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60A5FA"/><stop offset=".55" stop-color="#A78BFA"/><stop offset="1" stop-color="#FBBF24"/></linearGradient>
+        </defs>
+        <rect x="28" y="28" width="456" height="456" rx="116" fill="#0E0F13" stroke="url(#g)" stroke-width="16"/>
+        <path d="M150 184 L246 256 L150 328" fill="none" stroke="url(#gb)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="270" y="296" width="104" height="34" rx="17" fill="#FBBF24"/>
+      </svg>
+      <span class="wm">canales.md</span>
+    </div>
+
+    <p class="eyebrow">AI Engineer · Technical Founder · Infrastructure Architect</p>
+    <h1>JOSE <span class="grad">CANALES</span></h1>
+    <p class="sub">Production-grade AI systems that ship, scale, and survive.</p>
+
+    <div class="chips">
+      <div class="chip"><b>12+</b> Production Systems</div>
+      <div class="chip accent"><b>+$193K</b> Signal PnL</div>
+      <div class="chip"><b>2,428</b> Tests Passing</div>
+      <div class="chip"><b>11</b> Autonomous Agents</div>
+    </div>
+  </div>
+</body>
+</html>

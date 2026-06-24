@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
+import LogoMark from "./LogoMark";
 
 const NAV_ITEMS = [
   { label: "Work", href: "#work" },
@@ -88,9 +89,17 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
-            className="text-sm font-bold tracking-[0.3em] uppercase text-white/90"
+            aria-label="canales.md — home"
+            className="group flex items-center gap-2.5"
           >
-            @canales.md
+            <LogoMark
+              size={26}
+              idSuffix="nav"
+              className="transition-transform duration-500 group-hover:scale-105"
+            />
+            <span className="text-sm font-bold tracking-[0.3em] uppercase text-white/90">
+              canales.md
+            </span>
           </a>
 
           <div className="hidden md:flex items-center gap-8">
