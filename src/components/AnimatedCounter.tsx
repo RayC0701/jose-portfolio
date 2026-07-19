@@ -145,7 +145,7 @@ export function MetricsGrid() {
               className={`inline-flex items-center justify-center w-10 h-10 rounded-full mb-4 transition-all duration-500 ${
                 isComplete
                   ? "bg-blue-500/10 text-blue-400"
-                  : "bg-white/[0.03] text-white/20"
+                  : "bg-white/[0.03] text-white/45"
               }`}
             >
               {metric.icon}
@@ -171,7 +171,7 @@ export function MetricsGrid() {
               />
             </div>
 
-            <div className="text-[10px] sm:text-xs md:text-sm tracking-[0.2em] uppercase text-white/30 group-hover:text-white/50 transition-colors duration-300">
+            <div className="text-[10px] sm:text-xs md:text-sm tracking-[0.2em] uppercase text-white/50 group-hover:text-white/50 transition-colors duration-300">
               {metric.label}
             </div>
 

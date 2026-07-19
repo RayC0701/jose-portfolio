@@ -313,7 +313,7 @@ export default function LiveTerminal() {
           }`}
           style={{ transitionDelay: "150ms" }}
         >
-          <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/30 max-w-3xl mx-auto">
+          <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/50 max-w-3xl mx-auto">
             Real output from production systems running right now
           </p>
         </div>
@@ -356,7 +356,7 @@ export default function LiveTerminal() {
                 <div className="w-3 h-3 rounded-full bg-[#28C840]" />
               </div>
               <div className="flex-1 text-center">
-                <span className="text-xs text-white/25 font-mono">
+                <span className="text-xs text-white/45 font-mono">
                   jose@andraia — zsh — 120×40
                 </span>
               </div>
@@ -414,7 +414,7 @@ export default function LiveTerminal() {
               key={stat.label}
               className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.02]"
             >
-              <span className="text-[10px] tracking-wider uppercase text-white/25">
+              <span className="text-[10px] tracking-wider uppercase text-white/45">
                 {stat.label}
               </span>
               <span className="text-[10px] font-mono text-emerald-400/70 font-bold">

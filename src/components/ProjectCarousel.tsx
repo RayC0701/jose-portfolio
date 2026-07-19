@@ -113,13 +113,13 @@ function ProjectCard({
                   boxShadow: `0 0 6px ${project.accentColor}`,
                 }}
               />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-medium">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-white/60 font-medium">
                 {project.category}
               </span>
             </div>
 
             <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-            <p className="text-sm text-white/45 leading-relaxed mb-4">{project.description}</p>
+            <p className="text-sm text-white/65 leading-relaxed mb-4">{project.description}</p>
 
             <div className="flex flex-wrap gap-2 mb-5">
               {project.tags.map((tag) => (
@@ -127,7 +127,7 @@ function ProjectCard({
                   key={tag}
                   className="text-[10px] tracking-wider uppercase px-3 py-1 rounded-full border transition-colors duration-300"
                   style={{
-                    color: isHovered && isCenter ? project.accentColor : "rgba(255,255,255,0.4)",
+                    color: isHovered && isCenter ? project.accentColor : "rgba(255,255,255,0.6)",
                     borderColor:
                       isHovered && isCenter ? project.accentColor + "30" : "rgba(255,255,255,0.06)",
                     backgroundColor:
@@ -159,7 +159,7 @@ function ProjectCard({
               <div
                 className="w-full flex items-center justify-center py-3 rounded-lg text-xs tracking-[0.2em] uppercase font-semibold min-h-[44px]"
                 style={{
-                  color: "rgba(255,255,255,0.35)",
+                  color: "rgba(255,255,255,0.6)",
                   border: `1px solid rgba(255,255,255,0.08)`,
                   background: "transparent",
                 }}
@@ -251,7 +251,7 @@ export default function ProjectCarousel() {
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-white/30 mb-4">Featured Work</p>
+          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-4">Featured Work</p>
           <h2 className="text-4xl md:text-6xl font-bold text-white">
             Focus on <span className="text-gradient-impact">Impact</span>
           </h2>
@@ -287,7 +287,7 @@ export default function ProjectCarousel() {
             type="button"
             onClick={() => goTo(activeIdx - 1)}
             disabled={activeIdx === 0}
-            className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white/80 hover:border-white/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:text-white/80 hover:border-white/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
             aria-label="Previous project"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -321,7 +321,7 @@ export default function ProjectCarousel() {
             type="button"
             onClick={() => goTo(activeIdx + 1)}
             disabled={activeIdx === PROJECTS.length - 1}
-            className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white/80 hover:border-white/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:text-white/80 hover:border-white/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
             aria-label="Next project"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -8,7 +8,7 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "Docker Orchestration",
-    description: "17+ containers managed across multi-service stacks with automated health monitoring and zero-downtime deployments.",
+    description: "Multi-service stacks deployed with automated health monitoring and zero-downtime rollouts.",
     accent: "from-blue-400/20 to-cyan-400/20",
   },
   {
@@ -28,7 +28,7 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "Real-Time Monitoring",
-    description: "62 automated health checks with Prometheus metrics, Grafana dashboards, and auto-fix playbooks.",
+    description: "Prometheus metrics, Grafana dashboards, and auto-fix playbooks that remediate before an alert pages anyone.",
     accent: "from-emerald-400/20 to-green-400/20",
   },
   {
@@ -38,7 +38,7 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "Security Hardening",
-    description: "33+ security fixes across healthcare AI, with HIPAA-compliant deployment pipelines.",
+    description: "Threat-modeled healthcare AI with HIPAA-compliant deployment pipelines and audited PHI handling.",
     accent: "from-amber-400/20 to-orange-400/20",
   },
   {
@@ -48,7 +48,7 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "CI/CD Pipelines",
-    description: "Automated test suites with 2,428 passing tests across multi-repo monorepo architectures.",
+    description: "Automated test suites gating every merge across multi-repo monorepo architectures.",
     accent: "from-sky-400/20 to-blue-400/20",
   },
   {
@@ -58,7 +58,7 @@ const INFRA_ITEMS = [
       </svg>
     ),
     title: "AI Agent Architecture",
-    description: "Event-driven Signal Bus connecting 11 autonomous agents with Supabase-backed state management.",
+    description: "Event-driven Signal Bus coordinating an autonomous agent fleet with Supabase-backed state management.",
     accent: "from-violet-400/20 to-fuchsia-400/20",
   },
 ];
@@ -85,7 +85,7 @@ export default function EngineeringSection() {
         </RevealWrapper>
 
         <RevealWrapper className="text-center mb-6" delay={150}>
-          <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/30 max-w-3xl mx-auto">
+          <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/50 max-w-3xl mx-auto">
             Built for those who demand production-grade
           </p>
         </RevealWrapper>
@@ -111,13 +111,13 @@ export default function EngineeringSection() {
 
                 <div className="relative z-10">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="text-white/30 group-hover:text-blue-400 transition-colors duration-500">
+                    <div className="text-white/50 group-hover:text-blue-400 transition-colors duration-500">
                       {item.icon}
                     </div>
                     <div className="h-px flex-1 bg-gradient-to-r from-white/5 to-transparent" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-3 group-hover:text-white transition-colors">{item.title}</h3>
-                  <p className="text-sm text-white/35 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{item.description}</p>
+                  <p className="text-sm text-white/60 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{item.description}</p>
                 </div>
               </div>
             </RevealWrapper>

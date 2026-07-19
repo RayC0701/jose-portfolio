@@ -60,7 +60,7 @@ function Box({
           x={x + w / 2}
           y={y + h / 2 + 13}
           textAnchor="middle"
-          fill="rgba(255,255,255,0.45)"
+          fill="rgba(255,255,255,0.62)"
           fontSize={10}
           letterSpacing={1.5}
           fontFamily="var(--font-geist-mono), monospace"

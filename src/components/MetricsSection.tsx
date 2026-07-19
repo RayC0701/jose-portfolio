@@ -12,7 +12,7 @@ export default function MetricsSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <RevealWrapper className="text-center mb-20">
-          <p className="text-xs tracking-[0.4em] uppercase text-white/30 mb-4">By The Numbers</p>
+          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-4">By The Numbers</p>
           <h2 className="text-4xl md:text-6xl font-bold text-white">
             Measured <span className="text-gradient">Results</span>
           </h2>

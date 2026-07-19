@@ -273,7 +273,7 @@ export default function HeroSection() {
         className="relative z-10 max-w-6xl mx-auto px-6 text-center will-change-transform"
       >
         <p
-          className={`text-xs md:text-sm tracking-[0.4em] uppercase text-white/40 mb-5 transition-all duration-1000 ease-out ${
+          className={`text-xs md:text-sm tracking-[0.4em] uppercase text-white/60 mb-5 transition-all duration-1000 ease-out ${
             revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
           style={{ transitionDelay: "300ms" }}
@@ -301,7 +301,7 @@ export default function HeroSection() {
         </h1>
 
         <p
-          className={`text-lg md:text-xl text-white/40 max-w-2xl mx-auto mb-4 font-light transition-all duration-1000 ease-out ${
+          className={`text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-4 font-light transition-all duration-1000 ease-out ${
             revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
           style={{ transitionDelay: "1200ms" }}
@@ -324,7 +324,7 @@ export default function HeroSection() {
           }`}
           style={{ transitionDelay: "1800ms" }}
         >
-          <span className="text-[10px] tracking-[0.3em] uppercase text-white/25">Scroll to explore</span>
+          <span className="text-[10px] tracking-[0.3em] uppercase text-white/45">Scroll to explore</span>
           <div className="scroll-indicator">
             <div className="scroll-dot" />
           </div>
