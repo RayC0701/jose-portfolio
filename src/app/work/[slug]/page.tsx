@@ -51,7 +51,7 @@ export default async function CaseStudyPage({
       <div className="relative max-w-5xl mx-auto px-6 pt-28">
         <Link
           href="/#work"
-          className="inline-flex items-center gap-2 text-xs tracking-[0.3em] uppercase text-white/40 hover:text-white/80 transition-colors mb-12 min-h-[44px]"
+          className="inline-flex items-center gap-2 text-xs tracking-[0.3em] uppercase text-white/60 hover:text-white/80 transition-colors mb-12 min-h-[44px]"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <path d="M15 18l-6-6 6-6" />
@@ -65,7 +65,7 @@ export default async function CaseStudyPage({
               className="w-1.5 h-1.5 rounded-full"
               style={{ backgroundColor: accent, boxShadow: `0 0 8px ${accent}` }}
             />
-            <span className="text-[10px] tracking-[0.4em] uppercase text-white/45 font-medium">
+            <span className="text-[10px] tracking-[0.4em] uppercase text-white/65 font-medium">
               {project.category}
             </span>
           </div>
@@ -75,6 +75,28 @@ export default async function CaseStudyPage({
           <p className="text-lg md:text-xl text-white/55 max-w-3xl leading-relaxed font-light">
             {project.description}
           </p>
+
+          {project.links && project.links.length > 0 && (
+            <div className="mt-8 flex flex-wrap gap-3">
+              {project.links.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-xs tracking-[0.2em] uppercase font-semibold transition-all min-h-[44px]"
+                  style={{
+                    borderColor: accent + "55",
+                    color: accent,
+                    backgroundColor: accent + "10",
+                  }}
+                >
+                  <LinkIcon kind={link.kind} />
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
         </header>
 
         <section className="mb-20">
@@ -130,7 +152,7 @@ export default async function CaseStudyPage({
                 className="rounded-2xl p-6 glass"
                 style={{ borderColor: "rgba(255,255,255,0.08)" }}
               >
-                <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-4">
+                <p className="text-[10px] tracking-[0.3em] uppercase text-white/60 mb-4">
                   {group.category}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -170,7 +192,7 @@ export default async function CaseStudyPage({
                 >
                   {o.value}
                 </div>
-                <p className="text-[10px] tracking-[0.25em] uppercase text-white/45">
+                <p className="text-[10px] tracking-[0.25em] uppercase text-white/65">
                   {o.label}
                 </p>
               </div>
@@ -205,6 +227,39 @@ export default async function CaseStudyPage({
         </div>
       </div>
     </main>
+  );
+}
+
+function LinkIcon({ kind }: { kind: "repo" | "live" | "demo" }) {
+  const common = {
+    width: 14,
+    height: 14,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  if (kind === "repo") {
+    return (
+      <svg {...common}>
+        <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
+      </svg>
+    );
+  }
+  if (kind === "demo") {
+    return (
+      <svg {...common}>
+        <polygon points="5 3 19 12 5 21 5 3" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+      <path d="M15 3h6v6M10 14L21 3" />
+    </svg>
   );
 }
 

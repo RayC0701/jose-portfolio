@@ -88,7 +88,7 @@ function BentoCard({
             </span>
           </div>
           <svg
-            className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
+            className="w-4 h-4 text-white/45 group-hover:text-white/60 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -102,7 +102,7 @@ function BentoCard({
           {project.title}
         </h3>
         <p
-          className={`text-white/45 leading-relaxed flex-grow ${project.large ? "text-base" : "text-sm"}`}
+          className={`text-white/65 leading-relaxed flex-grow ${project.large ? "text-base" : "text-sm"}`}
         >
           {project.longDescription}
         </p>
@@ -113,7 +113,7 @@ function BentoCard({
               key={t}
               className="text-[10px] tracking-wider uppercase px-3 py-1 rounded-full border transition-colors duration-300"
               style={{
-                color: isHovered ? project.accentColor : "rgba(255,255,255,0.35)",
+                color: isHovered ? project.accentColor : "rgba(255,255,255,0.6)",
                 borderColor: isHovered ? project.accentColor + "25" : "rgba(255,255,255,0.06)",
                 backgroundColor: isHovered ? project.accentColor + "08" : "rgba(255,255,255,0.03)",
               }}
@@ -142,7 +142,7 @@ function BentoCard({
           <div
             className="mt-5 w-full flex items-center justify-center py-3 rounded-lg text-xs tracking-[0.2em] uppercase font-semibold min-h-[44px]"
             style={{
-              color: "rgba(255,255,255,0.35)",
+              color: "rgba(255,255,255,0.6)",
               border: `1px solid rgba(255,255,255,0.08)`,
             }}
             aria-disabled="true"
@@ -193,7 +193,7 @@ export default function ProjectGrid() {
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-white/30 mb-4">The Portfolio</p>
+          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-4">The Portfolio</p>
           <h2 className="text-4xl md:text-6xl font-bold text-white">
             Systems That <span className="text-gradient">Ship</span>
           </h2>

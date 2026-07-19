@@ -8,6 +8,18 @@ export type CaseStudyStack = {
   items: string[];
 };
 
+// Verifiable evidence for a project. Render-only-when-present: an empty or
+// omitted array shows no buttons, so nothing 404s. Populate with real URLs
+// (public repo, live deployment, or demo video) to turn "trust me" metrics
+// into "look for yourself" proof.
+export type ProjectLinkKind = "repo" | "live" | "demo";
+
+export type ProjectLink = {
+  kind: ProjectLinkKind;
+  label: string;
+  href: string;
+};
+
 export type CaseStudy = {
   problem: string;
   role: string;
@@ -33,6 +45,8 @@ export type Project = {
   tech: string[];
   large: boolean;
   animDir: "left" | "right" | "bottom";
+  // Verifiable links (repo / live / demo). Fill these in to add proof.
+  links?: ProjectLink[];
   caseStudy?: CaseStudy;
 };
 
@@ -56,6 +70,10 @@ export const PROJECTS: Project[] = [
     tech: ["Python", "XGBoost", "FHIR R4", "Docker"],
     large: true,
     animDir: "left",
+    // TODO(jose): add real proof, e.g.
+    //   { kind: "repo", label: "View Code", href: "https://github.com/RayC0701/sepsis-ai" },
+    //   { kind: "demo", label: "Watch Demo", href: "https://..." },
+    links: [],
     caseStudy: {
       problem:
         "Sepsis kills 270,000 Americans every year and time-to-detection is the single largest predictor of mortality. Clinical EHRs surface alerts too late, generate alarm fatigue, and rarely meet the evidentiary bar required for FDA Software as a Medical Device (SaMD) classification.",
@@ -68,10 +86,10 @@ export const PROJECTS: Project[] = [
         "FHIR R4 native: no proprietary data formats, no flat-file shortcuts",
       ],
       outcomes: [
-        { label: "Security Fixes Shipped", value: "33" },
-        { label: "Inference Latency (p95)", value: "<800ms" },
-        { label: "Data Standard", value: "FHIR R4" },
-        { label: "Release Class", value: "SaMD-ready" },
+        { label: "Bedside Alert Latency (p95)", value: "<800ms" },
+        { label: "Security Findings Closed", value: "33" },
+        { label: "EHR Interoperability", value: "FHIR R4" },
+        { label: "Regulatory Path", value: "SaMD-ready" },
       ],
       techStack: [
         { category: "Models", items: ["XGBoost ensemble", "Calibrated logistic baseline"] },
@@ -101,6 +119,8 @@ export const PROJECTS: Project[] = [
     tech: ["Python", "LightGBM", "PostgreSQL", "Redis"],
     large: true,
     animDir: "right",
+    // TODO(jose): add real proof (repo / live / demo) to replace unverifiable metrics.
+    links: [],
     caseStudy: {
       problem:
         "Discretionary trading does not scale: signals get crowded, judgment drifts, and post-mortems live in spreadsheets. The opportunity was a single venue-agnostic platform that turns ideas into testable, versioned strategies and routes the survivors to live execution.",
@@ -161,7 +181,7 @@ export const PROJECTS: Project[] = [
         { label: "Memory Model", value: "Hebbian-inspired" },
         { label: "Model Surface", value: "Claude API" },
         { label: "Retrieval", value: "Hybrid RAG" },
-        { label: "Session Persistence", value: "Persistent" },
+        { label: "Cross-Session Recall", value: "Persistent" },
       ],
       techStack: [
         { category: "Intelligence", items: ["Claude API", "Tool use", "Structured outputs"] },

@@ -73,11 +73,11 @@ export default function ContactSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <RevealWrapper className="text-center mb-20">
-          <p className="text-xs tracking-[0.4em] uppercase text-white/30 mb-4">Engagement</p>
+          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-4">Engagement</p>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Let&apos;s Build <span className="text-gradient">Together</span>
           </h2>
-          <p className="text-lg text-white/40 max-w-2xl mx-auto font-light">
+          <p className="text-lg text-white/60 max-w-2xl mx-auto font-light">
             Whether you need a technical co-founder, a production AI system, or an architecture that scales.
           </p>
         </RevealWrapper>
@@ -90,7 +90,7 @@ export default function ContactSection() {
 
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.03] group-hover:bg-blue-500/10 text-white/30 group-hover:text-blue-400 transition-all duration-500">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.03] group-hover:bg-blue-500/10 text-white/50 group-hover:text-blue-400 transition-all duration-500">
                       {model.icon}
                     </div>
                     <span className="text-4xl font-bold text-white/[0.04] group-hover:text-blue-500/10 transition-colors duration-500">
@@ -98,7 +98,7 @@ export default function ContactSection() {
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">{model.title}</h3>
-                  <p className="text-sm text-white/40 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{model.description}</p>
+                  <p className="text-sm text-white/60 leading-relaxed group-hover:text-white/50 transition-colors duration-500">{model.description}</p>
                 </div>
               </div>
             </RevealWrapper>
@@ -139,7 +139,7 @@ export default function ContactSection() {
                   href={link.href}
                   target={isMail ? undefined : "_blank"}
                   rel={isMail ? undefined : "noopener noreferrer"}
-                  className="group/social flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/5 hover:border-white/15 text-white/30 hover:text-white/70 transition-all duration-300 hover:bg-white/[0.03] min-h-[44px]"
+                  className="group/social flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/5 hover:border-white/15 text-white/50 hover:text-white/70 transition-all duration-300 hover:bg-white/[0.03] min-h-[44px]"
                 >
                   <span className="transition-colors duration-300">{link.icon}</span>
                   <span className="text-xs tracking-[0.15em] uppercase">{link.label}</span>
@@ -152,11 +152,11 @@ export default function ContactSection() {
 
       <div className="relative z-10 mt-32 border-t border-white/5 pt-8 max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/20 tracking-wider">
+          <p className="text-xs text-white/45 tracking-wider">
             &copy; {new Date().getFullYear()} Jose Canales. All rights reserved.
           </p>
-          <p className="text-xs text-white/20 tracking-wider">
-            Designed &amp; engineered by <span className="text-white/30">@canales.md</span>
+          <p className="text-xs text-white/45 tracking-wider">
+            Designed &amp; engineered by <span className="text-white/50">@canales.md</span>
           </p>
         </div>
       </div>

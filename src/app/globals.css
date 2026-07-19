@@ -29,6 +29,40 @@ body {
   color: #fff;
 }
 
+/* Visible keyboard focus — custom-styled links/buttons otherwise show nothing */
+:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Pointer interaction shouldn't paint the ring */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link: hidden until focused */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  transform: translate(-50%, -150%);
+  z-index: 100;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  background: #111113;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}
+
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

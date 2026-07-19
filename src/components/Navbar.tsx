@@ -27,11 +27,33 @@ function getScrolledServer(): boolean {
 export default function Navbar() {
   const scrolled = useSyncExternalStore(subscribeScroll, getScrolled, getScrolledServer);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
 
   const closeMobile = useCallback(() => {
     setMobileOpen(false);
+  }, []);
+
+  // Scroll-spy: highlight the nav item for the section currently in view.
+  useEffect(() => {
+    const sections = NAV_ITEMS.map((item) =>
+      document.getElementById(item.href.slice(1))
+    ).filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveId(visible[0].target.id);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 1] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -75,15 +97,26 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:flex items-center gap-8">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeId === item.href.slice(1);
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`relative text-xs tracking-[0.2em] uppercase transition-colors duration-300 ${
+                    isActive ? "text-white" : "text-white/65 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute -bottom-1.5 left-0 h-px bg-gradient-to-r from-blue-400 to-violet-400 transition-all duration-300 ${
+                      isActive ? "w-full opacity-100" : "w-0 opacity-0"
+                    }`}
+                  />
+                </a>
+              );
+            })}
             <a
               href="https://cal.com/josecanales/ai-consulting"
               target="_blank"
@@ -132,7 +165,10 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={closeMobile}
-              className="text-2xl tracking-[0.3em] uppercase text-white/70 hover:text-white transition-colors min-h-[44px] flex items-center"
+              aria-current={activeId === item.href.slice(1) ? "true" : undefined}
+              className={`text-2xl tracking-[0.3em] uppercase transition-colors min-h-[44px] flex items-center ${
+                activeId === item.href.slice(1) ? "text-white" : "text-white/70 hover:text-white"
+              }`}
             >
               {item.label}
             </a>

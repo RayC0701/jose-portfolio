@@ -60,7 +60,7 @@ export default function AriaDemo() {
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
               Aria — IT Support Agent
             </h3>
-            <p className="text-sm text-white/40 leading-relaxed mb-6 max-w-lg">
+            <p className="text-sm text-white/60 leading-relaxed mb-6 max-w-lg">
               Voice-enabled AI agent that handles IT support calls autonomously.
               Built with a multi-agent architecture: phone service, Redis-backed state,
               and intelligent escalation — running live in Docker on the same GPU host
@@ -71,7 +71,7 @@ export default function AriaDemo() {
               {["Twilio Voice", "Redis State", "Docker", "Multi-Agent", "RAG Pipeline"].map((tag) => (
                 <span
                   key={tag}
-                  className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[10px] text-white/30 tracking-wider"
+                  className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[10px] text-white/50 tracking-wider"
                 >
                   {tag}
                 </span>
@@ -79,14 +79,14 @@ export default function AriaDemo() {
             </div>
 
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] text-xs text-white/30">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] text-xs text-white/50">
                 <div className="relative">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                   <div className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                 </div>
                 Running on andraia
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] text-white/20 tracking-wider">
+              <span className="inline-flex items-center gap-1 text-[10px] text-white/45 tracking-wider">
                 it-agent-phone-service &middot; it-agent-redis
               </span>
             </div>
